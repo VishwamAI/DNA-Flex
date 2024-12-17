@@ -1,0 +1,29 @@
+# ML/Data Science
+torch
+tensorflow
+jax
+numpy
+scipy
+pandas
+scikit-learn
+
+# Bioinformatics
+biopython
+mdtraj
+prody
+biotite
+
+# Visualization
+plotly
+py3dmol
+
+# Web
+flask
+
+# NLP
+transformers
+datasets
+tokenizers
+
+# Simulation
+openmm
