@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
-from .structure import DnaStructure, DnaChain, DnaResidue
+from dnaflex.structure.structure import DnaStructure, DnaChain, DnaResidue
 
 class FlexibilityAnalyzer:
     """Analyzes DNA flexibility based on structure and sequence."""

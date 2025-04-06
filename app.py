@@ -95,7 +95,7 @@ def predict():
         nlp_insights = sequence_nlp.analyze(sequence)
 
         # LLM-based analysis
-        llm_analysis = dna_llm.analyze(sequence)
+        llm_analysis = dna_model.analyze(sequence)
 
         return jsonify({
             'analysis': analysis_result,
@@ -123,7 +123,7 @@ def ask_question():
         return jsonify({'error': 'No question provided'}), 400
 
     try:
-        answer = dna_llm.answer_question(question, context)
+        answer = dna_model.answer_question(question, context)
         return jsonify({'answer': answer})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -208,3 +208,22 @@ def analyze_protein_domains():
         return jsonify({'error': 'No sequence provided'}), 400
 
     try:
+        domains = protein_model._predict_protein_domains(sequence)
+        return jsonify({'domains': domains})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/protein/predict_sites', methods=['POST'])
+def predict_protein_sites():
+    """Endpoint for protein functional sites prediction."""
+    data = request.get_json()
+    sequence = data.get('sequence')
+
+    if not sequence:
+        return jsonify({'error': 'No sequence provided'}), 400
+
+    try:
+        sites = protein_model._predict_functional_sites(sequence)
+        return jsonify(sites)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

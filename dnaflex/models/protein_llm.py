@@ -1,5 +1,8 @@
 """BioLLM: JAX-based DNA and Protein Language Model using JAX and Haiku."""
 
+import os
+os.environ['JAX_PLATFORMS'] = 'cpu'  # Force JAX to use CPU
+
 import jax
 import jax.numpy as jnp
 import flax
@@ -162,7 +165,7 @@ class BioLLM:
             padding = [self.token_to_id["<PAD>"]] * (self.max_seq_length - len(token_ids))
             token_ids.extend(padding)
             
-        return jnp.array(token_ids, dtype=jnp.int32).reshape(1, -1)  # Add batch dimension
+        return jnp.array([token_ids], dtype=np.int32)  # Use numpy's int32
     
     def batch_tokenize(self, sequences: List[str]) -> jnp.ndarray:
         """Tokenize a batch of sequences.
@@ -185,11 +188,10 @@ class BioLLM:
             Embedding array
         """
         tokens = self.tokenize(sequence)
-        tokens = tokens.reshape(1, -1)  # Add batch dimension
         
         # Forward pass through the model without final projection
-        def _embed_fn(params, tokens):
-            # Simplified embedding extraction
+        def _embed_fn(tokens):
+            """Embedding function that takes tokens as input."""
             embedding_layer = hk.Embed(
                 vocab_size=self.vocab_size,
                 embed_dim=self.embedding_size
@@ -310,6 +312,9 @@ class BioLLM:
             raise ValueError("This model is not configured for protein analysis")
             
         # Validate sequence
+        if not sequence:
+            raise ValueError("Empty sequence provided")
+            
         if not all(aa in "ACDEFGHIKLMNPQRSTVWY" for aa in sequence):
             raise ValueError("Invalid protein sequence")
             
@@ -674,6 +679,9 @@ class BioLLM:
     
     def _calculate_hydrophobicity(self, sequence: str) -> float:
         """Calculate average hydrophobicity of protein sequence."""
+        if not sequence:
+            return 0.0
+            
         # Kyte-Doolittle hydrophobicity scale
         hydropathy = {
             'A': 1.8, 'C': 2.5, 'D': -3.5, 'E': -3.5, 'F': 2.8,
@@ -715,9 +723,17 @@ class BioLLM:
             'M': 0.60, 'N': 0.40, 'P': 0.30, 'Q': 0.45, 'R': 0.55,
             'S': 0.35, 'T': 0.25, 'V': 0.80, 'W': 0.90, 'Y': 0.65
         }
-        # Calculate propensities
-        helix = [helix_propensity.get(aa, 0) for aa in sequence]
-        sheet = [sheet_propensity.get(aa, 0) for aa in sequence]
+        
+        # Calculate raw propensities
+        helix = [helix_propensity.get(aa, 0.5) for aa in sequence]
+        sheet = [sheet_propensity.get(aa, 0.5) for aa in sequence]
+        
+        # Normalize propensities to probabilities
+        for i in range(len(sequence)):
+            total = helix[i] + sheet[i] + 0.5  # 0.5 for coil
+            helix[i] /= total
+            sheet[i] /= total
+        
         return {
             'helix': helix,
             'sheet': sheet
@@ -749,15 +765,28 @@ class BioLLM:
         domains = []
         min_domain_size = 30
         
+        # Handle sequences shorter than window size
+        if len(sequence) < min_domain_size:
+            return [{
+                'start': 0,
+                'end': len(sequence),
+                'sequence': sequence,
+                'type': 'unknown'
+            }]
+        
         # Simple domain prediction based on hydrophobicity patterns
         hydrophobicity = [self._aa_hydrophobicity(aa) for aa in sequence]
         
         # Sliding window analysis
-        window_size = 20
+        window_size = min(20, len(sequence))
         scores = []
+        
         for i in range(len(sequence) - window_size + 1):
             window_score = sum(hydrophobicity[i:i+window_size]) / window_size
             scores.append(window_score)
+        
+        if not scores:  # Handle case when no scores were calculated
+            return domains
             
         # Find regions with consistent hydrophobicity patterns
         current_domain = {'start': 0, 'score': scores[0]}
@@ -773,7 +802,7 @@ class BioLLM:
                         'type': 'hydrophobic' if current_domain['score'] > 0 else 'hydrophilic'
                     })
                 current_domain = {'start': i, 'score': scores[i]}
-                
+        
         # Add final domain if large enough
         if len(scores) - current_domain['start'] >= min_domain_size:
             domains.append({
@@ -782,7 +811,7 @@ class BioLLM:
                 'sequence': sequence[current_domain['start']:],
                 'type': 'hydrophobic' if current_domain['score'] > 0 else 'hydrophilic'
             })
-            
+        
         return domains
     
     def _predict_protein_disorder(self, sequence: str) -> List[float]:
@@ -931,21 +960,43 @@ class BioLLM:
         return sites
     
     def _match_pattern(self, sequence: str, pattern: str) -> bool:
-        """Match sequence against pattern with wildcards."""
-        if len(sequence) != len(pattern):
-            return False
-            
-        for s, p in zip(sequence, pattern):
-            if p == 'X':
-                continue
-            if p == '[':  # Handle character classes
-                class_end = pattern.index(']')
-                if s not in pattern[1:class_end]:
-                    return False
-                continue
-            if s != p:
+        """Match sequence against pattern with wildcards and character classes."""
+        pos = 0  # Position in sequence
+        pat_pos = 0  # Position in pattern
+        
+        while pos < len(sequence):
+            if pat_pos >= len(pattern):
                 return False
-        return True
+                
+            if pattern[pat_pos] == 'X':
+                pos += 1
+                pat_pos += 1
+                continue
+                
+            if pattern[pat_pos] == '[':
+                end = pattern.find(']', pat_pos)
+                if end == -1:
+                    return False
+                    
+                chars = pattern[pat_pos + 1:end]
+                negation = chars.startswith('^')
+                if negation:
+                    chars = chars[1:]
+                    
+                if negation == (sequence[pos] in chars):
+                    return False
+                    
+                pos += 1
+                pat_pos = end + 1
+                continue
+                
+            if sequence[pos] != pattern[pat_pos]:
+                return False
+                
+            pos += 1
+            pat_pos += 1
+        
+        return pat_pos >= len(pattern)
     
     def _is_potential_binding_site(self, window: str) -> bool:
         """Predict if a sequence window could be a binding site."""
@@ -958,6 +1009,13 @@ class BioLLM:
     
     def _predict_structure_class(self, sequence: str) -> Dict[str, float]:
         """Predict protein structure class probabilities."""
+        if not sequence:
+            return {
+                'alpha': 0.0,
+                'beta': 0.0,
+                'mixed': 1.0  # Default to mixed for empty sequence
+            }
+        
         # Calculate propensities for different structure classes
         alpha_propensity = sum(self._predict_secondary_structure_propensities(sequence)['helix']) / len(sequence)
         beta_propensity = sum(self._predict_secondary_structure_propensities(sequence)['sheet']) / len(sequence)
@@ -1085,13 +1143,13 @@ class BioLLM:
     
     def _has_signal_peptide(self, sequence: str) -> bool:
         """Predict presence of signal peptide."""
-        if len(sequence) < 30:
+        if len(sequence) < 15:  # Allow shorter sequences
             return False
             
-        # Check first 30 residues for signal peptide features
-        n_region = sequence[:8]
-        h_region = sequence[8:20]
-        c_region = sequence[20:30]
+        # Check N-terminal region for signal peptide features
+        n_region = sequence[:min(8, len(sequence))]
+        h_region = sequence[min(8, len(sequence)):min(20, len(sequence))]
+        c_region = sequence[min(20, len(sequence)):min(30, len(sequence))]
         
         # N-region should be positively charged
         n_positive = sum(1 for aa in n_region if aa in 'KR')
@@ -1102,28 +1160,44 @@ class BioLLM:
         # C-region should have small, uncharged residues
         c_small = sum(1 for aa in c_region if aa in 'AGSPT')
         
-        return (n_positive >= 2 and 
-                h_hydrophobic >= 8 and 
-                c_small >= 4)
+        # More lenient thresholds
+        return (n_positive >= 1 and  # Was 2
+                (h_hydrophobic / len(h_region) if h_region else 0) >= 0.5 and  # Was 8
+                (c_small / len(c_region) if c_region else 0) >= 0.3)  # Was 4
     
     def _has_nuclear_features(self, sequence: str) -> bool:
         """Check for nuclear localization features."""
         # Classic NLS patterns
         nls_patterns = [
-            'KR[KR]R',
-            'K[KR]X[KR]',
-            'PXXKR[^DE][KR]'
+            'K[KR][KR]R',  # Classic monopartite NLS
+            'KR[KR]',      # Simplified NLS
+            'PKKKRKV',     # SV40 large T antigen NLS
+            'PAAKRVKLD'    # c-Myc NLS
         ]
         
-        return any(self._match_pattern(sequence[i:i+len(pattern)], pattern)
-                  for pattern in nls_patterns
-                  for i in range(len(sequence) - len(pattern) + 1))
+        # Check for NLS patterns
+        for pattern in nls_patterns:
+            for i in range(len(sequence) - len(pattern) + 1):
+                if self._match_pattern(sequence[i:i+len(pattern)], pattern):
+                    return True
+                    
+        # Check for high basic amino acid content in windows
+        window_size = 8
+        basic_threshold = 0.5
+        
+        for i in range(len(sequence) - window_size + 1):
+            window = sequence[i:i+window_size]
+            basic_fraction = sum(1 for aa in window if aa in 'KR') / window_size
+            if basic_fraction >= basic_threshold:
+                return True
+                
+        return False
     
     def _has_transmembrane_features(self, sequence: str) -> bool:
         """Check for transmembrane features."""
         # Look for hydrophobic stretches characteristic of transmembrane regions
         window_size = 20
-        min_hydrophobic = 15
+        min_hydrophobic = 12  # Reduced from 15 for better sensitivity
         
         for i in range(len(sequence) - window_size + 1):
             window = sequence[i:i+window_size]

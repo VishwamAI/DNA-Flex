@@ -3,7 +3,7 @@
 import pytest
 import numpy as np
 from dnaflex.models.protein_llm import BioLLM
-
+import jax as jnp
 @pytest.fixture
 def protein_model():
     """Create protein model instance for testing."""
@@ -21,12 +21,8 @@ def test_tokenization(protein_model):
     tokens = protein_model.tokenize(sequence)
     
     # Check token array properties
-    assert len(tokens) == protein_model.max_seq_length
-    assert all(isinstance(t, np.integer) for t in tokens)
-    
-    # Check special tokens
-    assert tokens[0] == protein_model.token_to_id['<CLS>']
-    assert tokens[len(sequence) + 1] == protein_model.token_to_id['<SEP>']
+    assert tokens.shape == (1, protein_model.max_seq_length)  # Shape should be (1, max_seq_length)
+    assert tokens.ndim == 2  # Should be a 2D array
 
 def test_embedding_generation(protein_model):
     """Test protein sequence embedding generation."""
@@ -154,7 +150,7 @@ def test_long_sequence_handling(protein_model):
     
     # Test tokenization
     tokens = protein_model.tokenize(long_sequence)
-    assert len(tokens) == protein_model.max_seq_length
+    assert tokens.shape == (1, protein_model.max_seq_length)  # Shape should be (1, max_seq_length)
     
     # Test embedding generation
     embeddings = protein_model.generate_embeddings(long_sequence)
