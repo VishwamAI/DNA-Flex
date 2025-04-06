@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "id": "TEST001",
+    "description": "Sample DNA structure for testing",
+    "source": "synthetic"
+  },
+  "chains": {
+    "A": [
+      {
+        "id": 1,
+        "name": "DA",
+        "atoms": {
+          "P": {
+            "coords": [1.0, 2.0, 3.0],
+            "element": "P",
+            "bfactor": 30.0,
+            "occupancy": 1.0
+          },
+          "O5'": {
+            "coords": [1.5, 2.5, 3.5],
+            "element": "O",
+            "bfactor": 30.0,
+            "occupancy": 1.0
+          }
+        }
+      },
+      {
+        "id": 2,
+        "name": "DT",
+        "atoms": {
+          "P": {
+            "coords": [4.0, 5.0, 6.0],
+            "element": "P",
+            "bfactor": 30.0,
+            "occupancy": 1.0
+          },
+          "O5'": {
+            "coords": [4.5, 5.5, 6.5],
+            "element": "O",
+            "bfactor": 30.0,
+            "occupancy": 1.0
+          }
+        }
+      }
+    ],
+    "B": [
+      {
+        "id": 1,
+        "name": "DT",
+        "atoms": {
+          "P": {
+            "coords": [7.0, 8.0, 9.0],
+            "element": "P",
+            "bfactor": 30.0,
+            "occupancy": 1.0
+          },
+          "O5'": {
+            "coords": [7.5, 8.5, 9.5],
+            "element": "O",
+            "bfactor": 30.0,
+            "occupancy": 1.0
+          }
+        }
+      },
+      {
+        "id": 2,
+        "name": "DA",
+        "atoms": {
+          "P": {
+            "coords": [10.0, 11.0, 12.0],
+            "element": "P",
+            "bfactor": 30.0,
+            "occupancy": 1.0
+          },
+          "O5'": {
+            "coords": [10.5, 11.5, 12.5],
+            "element": "O",
+            "bfactor": 30.0,
+            "occupancy": 1.0
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+>test_sequence_1|Test DNA sequence 1
+ATCGATCGATCGATCG
+#type: DNA
+#organism: Test Organism
+#source: synthetic
+
+>test_sequence_2|Test DNA sequence 2 with modifications
+GCTAGCTAGCTAGCTA
+#type: DNA
+#organism: Test Organism
+#modifications: m6A:3,5mC:7
