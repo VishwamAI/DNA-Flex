@@ -11,8 +11,8 @@ from dnaflex.constants import chemical_component_sets
 from dnaflex.constants import chemical_components
 from dnaflex.constants import mmcif_names
 from dnaflex.constants import residue_names
-from dnaflex.data.tools import rdkit_utils
 from dnaflex.structure import chemical_components as struc_chem_comps
+from dnaflex.data.tools import rdkit_utils
 import jax.numpy as jnp
 import numpy as np
 from rdkit import Chem
