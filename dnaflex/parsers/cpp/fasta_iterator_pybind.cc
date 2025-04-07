@@ -15,12 +15,13 @@ void init_fasta_iterator(py::module_& m) {
         .def("next", &FastaIterator::next)
         .def("reset", &FastaIterator::reset)
         .def("is_valid", &FastaIterator::is_valid)
-        .def("__iter__", [](FastaIterator& self) {
-            return py::make_iterator(
-                FastaIterator(self),
-                FastaIterator(),
-                py::return_value_policy::reference_internal
-            );
+        .def("__iter__", [](FastaIterator& self) { return &self; })
+        .def("__next__", [](FastaIterator& self) {
+            FastaEntry entry;
+            if (self.next(entry)) {
+                return entry;
+            }
+            throw py::stop_iteration();
         });
 }
 
