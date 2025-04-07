@@ -91,3 +91,63 @@ GLYCAN_OTHER_LIGANDS = {
 
 # Common water names
 WATER_NAMES = {'HOH', 'WAT', 'H2O', 'DOD'}
+
+# Extended DNA components
+MODIFIED_DNA = {
+    '5MC',  # 5-methylcytosine
+    'M2G',  # N2-methylguanine
+    'DHU',  # Dihydrouracil
+    'CBR',  # 5-bromocytosine
+    'CFL',  # 5-fluorocytosine
+    '8OG',  # 8-oxoguanine
+    '6OG',  # 6-O-methylguanine
+    'PSU',  # Pseudouridine
+}
+
+# DNA backbone components
+DNA_BACKBONE = {
+    'PO4',  # Phosphate
+    'DEO',  # Deoxyribose
+    'DOC',  # Deoxycholic acid
+}
+
+# DNA minor groove binders
+DNA_MINOR_GROOVE_BINDERS = {
+    'DSN',  # Distamycin
+    'NTM',  # Netropsin
+    'BRU',  # Berenil
+    'PNT',  # Pentamidine
+}
+
+# DNA major groove binders
+DNA_MAJOR_GROOVE_BINDERS = {
+    'MTX',  # Mitoxantrone
+    'DOX',  # Doxorubicin
+    'CHL',  # Chloramphenicol
+}
+
+# DNA intercalators
+DNA_INTERCALATORS = {
+    'EBR',  # Ethidium bromide
+    'PRF',  # Proflavine
+    'ACR',  # Acridine
+    'DAU',  # Daunorubicin
+}
+
+# DNA crosslinkers
+DNA_CROSSLINKERS = {
+    'CIS',  # Cisplatin
+    'CBP',  # Carboplatin
+    'MMC',  # Mitomycin C
+}
+
+# Define combined sets
+ALL_DNA_COMPONENTS = (
+    STANDARD_DNA |
+    MODIFIED_DNA |
+    DNA_BACKBONE |
+    DNA_MINOR_GROOVE_BINDERS |
+    DNA_MAJOR_GROOVE_BINDERS |
+    DNA_INTERCALATORS |
+    DNA_CROSSLINKERS
+)

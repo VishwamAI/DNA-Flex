@@ -137,12 +137,28 @@ HEAVY_ATOM_TYPES = {
     'VAL': {'N', 'CA', 'C', 'O', 'CB', 'CG1', 'CG2'},
 }
 
-# DNA base atom types
+# DNA base atom types with hydrogen bonding properties
 DNA_BASE_ATOMS = {
-    'A': {'N1', 'C2', 'N3', 'C4', 'C5', 'C6', 'N6', 'N7', 'C8', 'N9'},  # Adenine
-    'T': {'N1', 'C2', 'O2', 'N3', 'C4', 'O4', 'C5', 'C7', 'C6'},  # Thymine
-    'G': {'N1', 'C2', 'N2', 'N3', 'C4', 'C5', 'C6', 'O6', 'N7', 'C8', 'N9'},  # Guanine
-    'C': {'N1', 'C2', 'O2', 'N3', 'C4', 'N4', 'C5', 'C6'},  # Cytosine
+    'DA': {  # Adenine
+        'atoms': {'N1', 'C2', 'N3', 'C4', 'C5', 'C6', 'N6', 'N7', 'C8', 'N9'},
+        'donors': {'N1', 'N6'},  # N1 is donor to Thymine N3, N6 to Thymine O4
+        'acceptors': {'N7'}  # N7 can accept in non-WC base pairs
+    },
+    'DT': {  # Thymine
+        'atoms': {'N1', 'C2', 'O2', 'N3', 'C4', 'O4', 'C5', 'C7', 'C6'},
+        'donors': {},  # No donors in canonical WC base pairing
+        'acceptors': {'O2', 'O4', 'N3'}  # N3 accepts from Adenine N1
+    },
+    'DG': {  # Guanine
+        'atoms': {'N1', 'C2', 'N2', 'N3', 'C4', 'C5', 'C6', 'O6', 'N7', 'C8', 'N9'},
+        'donors': {'N1', 'N2'},
+        'acceptors': {'O6', 'N3', 'N7'}
+    },
+    'DC': {  # Cytosine
+        'atoms': {'N1', 'C2', 'O2', 'N3', 'C4', 'N4', 'C5', 'C6'},
+        'donors': {'N4'},
+        'acceptors': {'O2', 'N3'}
+    }
 }
 
 # Standard backbone atoms for nucleic acids
@@ -187,12 +203,21 @@ def get_atom_type(atom_name, res_name=None, element=None):
             if class_type not in classifications:
                 classifications.append(class_type)
     
-    # Handle DNA/RNA base atoms
-    if res_name in ['DA', 'DT', 'DG', 'DC', 'A', 'U', 'G', 'C']:
-        base = res_name[1] if res_name.startswith('D') else res_name
-        if base in DNA_BASE_ATOMS and atom_name in DNA_BASE_ATOMS[base]:
+    # Handle DNA base atoms and hydrogen bonding
+    if res_name in DNA_BASE_ATOMS:
+        base_info = DNA_BASE_ATOMS[res_name]
+        if atom_name in base_info['atoms']:
             if ATOM_TYPES['BASE'] not in classifications:
                 classifications.append(ATOM_TYPES['BASE'])
+            # Add donor/acceptor classifications with priority over element-based ones
+            if ATOM_TYPES['DONOR'] in classifications:
+                classifications.remove(ATOM_TYPES['DONOR'])
+            if ATOM_TYPES['ACCEPTOR'] in classifications:
+                classifications.remove(ATOM_TYPES['ACCEPTOR'])
+            if atom_name in base_info['donors']:
+                classifications.append(ATOM_TYPES['DONOR'])
+            if atom_name in base_info['acceptors']:
+                classifications.append(ATOM_TYPES['ACCEPTOR'])
     
     # Handle protein sidechain atoms
     if res_name in ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 

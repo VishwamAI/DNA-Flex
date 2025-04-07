@@ -106,6 +106,45 @@ DNA_BASE_ATOMS = {
     'C': ['N1', 'C2', 'O2', 'N3', 'C4', 'N4', 'C5', 'C6']  # Cytosine
 }
 
+# Modified DNA base atoms (extends DNA_BASE_ATOMS)
+MODIFIED_DNA_BASE_ATOMS = {
+    '5MC': ['N1', 'C2', 'O2', 'N3', 'C4', 'N4', 'C5', 'C5M', 'C6'],  # 5-methylcytosine
+    'M2G': ['N1', 'C2', 'N2', 'CN2', 'N3', 'C4', 'C5', 'C6', 'O6', 'N7', 'C8', 'N9'],  # N2-methylguanine
+    'DHU': ['N1', 'C2', 'O2', 'N3', 'C4', 'O4', 'C5', 'C6']  # Dihydrouracil
+}
+
+# Base pairing atoms and distances
+BASE_PAIR_ATOMS = {
+    ('DA', 'DT'): [
+        ('N6', 'O4', 2.95),  # A:N6 to T:O4 hydrogen bond
+        ('N1', 'N3', 2.82),  # A:N1 to T:N3 hydrogen bond
+    ],
+    ('DG', 'DC'): [
+        ('O6', 'N4', 2.91),  # G:O6 to C:N4 hydrogen bond
+        ('N1', 'N3', 2.95),  # G:N1 to C:N3 hydrogen bond
+        ('N2', 'O2', 2.87),  # G:N2 to C:O2 hydrogen bond
+    ]
+}
+
+# Define which atoms can hydrogen bond
+HYDROGEN_BOND_DONORS = {
+    'DA': ['N6'],
+    'DT': ['N3'],
+    'DG': ['N1', 'N2'],
+    'DC': ['N4'],
+    '5MC': ['N4'],  # Modified cytosine
+    'M2G': ['N1', 'N2'],  # Modified guanine
+}
+
+HYDROGEN_BOND_ACCEPTORS = {
+    'DA': ['N1', 'N7'],
+    'DT': ['O2', 'O4'],
+    'DG': ['O6', 'N3', 'N7'],
+    'DC': ['O2', 'N3'],
+    '5MC': ['O2', 'N3'],  # Modified cytosine
+    'M2G': ['O6', 'N3', 'N7'],  # Modified guanine
+}
+
 # Standard protein backbone atoms
 PROTEIN_BACKBONE_ATOMS = ['N', 'CA', 'C', 'O']
 
@@ -185,6 +224,11 @@ def get_atom_type(atom_name, res_name=None, element=None):
         if base in DNA_BASE_ATOMS and atom_name in DNA_BASE_ATOMS[base]:
             if ATOM_TYPES['BASE'] not in classifications:
                 classifications.append(ATOM_TYPES['BASE'])
+    
+    # Handle modified DNA base atoms
+    if res_name in MODIFIED_DNA_BASE_ATOMS and atom_name in MODIFIED_DNA_BASE_ATOMS[res_name]:
+        if ATOM_TYPES['BASE'] not in classifications:
+            classifications.append(ATOM_TYPES['BASE'])
     
     # Handle protein sidechain atoms
     if res_name in ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 

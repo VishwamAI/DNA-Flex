@@ -88,3 +88,31 @@ def create_standard_component(
         atoms=atoms,
         elements=elements
     )
+
+# Modified DNA bases
+MODIFIED_DNA_BASES = {
+    '5MC': {  # 5-methylcytosine
+        'name': '5-methylcytosine',
+        'parent': 'DC',
+        'formula': 'C5H7N3O',
+        'atoms': [
+            'N1', 'C2', 'O2', 'N3', 'C4', 'N4', 'C5', 'C5M', 'C6'  # C5M is methyl group
+        ]
+    },
+    'M2G': {  # N2-methylguanine
+        'name': 'N2-methylguanine',
+        'parent': 'DG',
+        'formula': 'C6H7N5O',
+        'atoms': [
+            'N1', 'C2', 'N2', 'CN2', 'N3', 'C4', 'C5', 'C6', 'O6', 'N7', 'C8', 'N9'  # CN2 is methyl
+        ]
+    },
+    'DHU': {  # Dihydrouracil
+        'name': 'Dihydrouracil',
+        'parent': 'DT',
+        'formula': 'C4H6N2O2',
+        'atoms': [
+            'N1', 'C2', 'O2', 'N3', 'C4', 'O4', 'C5', 'C6'
+        ]
+    }
+}
