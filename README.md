@@ -1,133 +1,188 @@
 # DNA-Flex
 
-A comprehensive Python library for analyzing DNA and protein flexibility, structural dynamics, and molecular interactions using deep learning and molecular dynamics approaches.
+DNA-Flex is a Python package for analyzing and predicting DNA flexibility and structural dynamics. It provides tools for molecular dynamics simulations, flexibility analysis, and structure-based predictions for DNA sequences.
 
-## Overview
+## Features
 
-DNA-Flex is a powerful toolkit that combines machine learning, molecular dynamics, and bioinformatics to analyze and predict:
-
-- DNA/RNA flexibility and structural dynamics
-- Protein structural analysis and dynamics
-- Molecular interactions and binding predictions
-- Mutation impact analysis
-- Sequence-structure-function relationships
-
-## Key Features
-
-- **Atom Layout System**
-  - Flexible atom representation for molecules
-  - Support for standard and modified residues
-  - Efficient handling of protein and nucleic acid structures
-  
-- **Bio-Language Model**
-  - DNA/Protein sequence analysis
-  - Embedding generation for sequences 
-  - Pattern matching and motif detection
-  - Structure prediction capabilities
-
-- **Chemical Components**
-  - Standard residue definitions
-  - Modified amino acid handling
-  - Support for ligands and non-standard components
-  - Glycan component analysis
-
-- **Structure Analysis**
-  - Atomic structure manipulation
-  - Secondary structure prediction
-  - Domain prediction
-  - Flexibility analysis
+- DNA flexibility analysis based on sequence and structure
+- Molecular dynamics simulations for DNA molecules
+- Multiple sequence alignment and profile analysis
+- Structure-based predictions and analysis
+- Drug binding site prediction
+- Efficient data caching and management
+- C++ accelerated computations via pybind11
 
 ## Installation
 
 ```bash
-pip install -r requirements.txt
+pip install dnaflex
 ```
 
-## Usage Examples
+### Development Installation
 
-### Basic DNA Analysis
-```python
-from dnaflex.models.protein_llm import BioLLM
-from dnaflex.flexibility import analyze_dna_flexibility
-
-# Initialize model
-model = BioLLM(model_type="dna")
-
-# Analyze DNA sequence
-sequence = "ATGCTAGCTAGCT"
-result = model.analyze_dna(sequence)
-
-# Get flexibility predictions
-flexibility = analyze_dna_flexibility(sequence)
+```bash
+git clone https://github.com/yourusername/DNA-Flex.git
+cd DNA-Flex
+pip install -e '.[dev]'
 ```
 
-### Protein Structure Analysis
+## Quick Start
+
 ```python
-from dnaflex.models.atom_layout import AtomLayout
-from dnaflex.structure import Structure
+from dnaflex.structure import DnaStructure
+from dnaflex.flexibility import FlexibilityAnalyzer
 
-# Load and analyze protein structure
-structure = Structure.from_pdb("example.pdb")
-atom_layout = AtomLayout.from_structure(structure)
+# Create structure from PDB file
+structure = DnaStructure.from_pdb('dna.pdb')
 
-# Analyze protein properties
-properties = model.analyze_protein(sequence)
+# Analyze flexibility
+analyzer = FlexibilityAnalyzer(structure)
+flexibility_scores = analyzer.predict_flexibility(structure.chains[0])
+flexible_regions = analyzer.identify_flexible_regions(structure.chains[0])
+
+print("Flexible regions:", flexible_regions)
 ```
 
 ## Project Structure
 
 ```
 dnaflex/
-├── constants/            # Constant definitions and configurations
-├── data/                # Data handling and management
-├── models/              # Core ML models and analysis
-├── structure/           # Structure manipulation utilities
-├── parsers/            # File format parsers
-└── tests/              # Test suites
+├── __init__.py
+├── app.py                   # Main application entry point
+├── flexibility.py          # Core flexibility analysis
+├── common/                 # Common utilities and base classes
+│   ├── base_config.py
+├── constants/             # Constant definitions
+│   ├── atom_layouts.py
+│   ├── atom_types.py
+│   ├── chemical_components.py
+│   ├── mmcif_names.py
+│   ├── residue_names.py
+├── data/                  # Data loading and management
+│   ├── cache.py
+│   ├── loader.py
+│   ├── manager.py
+│   ├── providers.py
+│   ├── cpp/              # C++ accelerated computations
+│   │   ├── msa_profile_pybind.cc
+│   │   ├── msa_profile_pybind.h
+├── models/               # Analysis and prediction models
+│   ├── analysis.py
+│   ├── dna_data_processing.py
+│   ├── dna_llm.py
+│   ├── drug_binding.py
+│   ├── dynamics.py
+│   ├── features.py
+├── parsers/              # File format parsers
+│   ├── parser.py
+├── structure/            # Structure representation
+│   ├── structure.py
+├── tests/               # Test suite
 ```
 
-## Key Components
+## Documentation
 
-### Atom Layout System
-The atom layout system provides a flexible framework for representing molecular structures:
+Full documentation is available at [readthedocs](https://dnaflex.readthedocs.io/).
 
-- Supports various atom types and residues
-- Handles protein and nucleic acid structures
-- Provides efficient conversion between formats
+### Core Components
 
-### BioLLM Model
-The biological language model offers:
+1. **Flexibility Analysis:**
+   - Sequence-based flexibility prediction
+   - Structure-based dynamics analysis
+   - Base step parameter calculations
 
-- Sequence analysis capabilities
-- Structure prediction
-- Pattern matching
-- Motif detection
+2. **Structure Management:**
+   - PDB file parsing and writing
+   - Structure manipulation and analysis
+   - Coordinate system transformations
 
-### Chemical Components
-Comprehensive support for:
+3. **Data Management:**
+   - Efficient caching system
+   - Data providers for sequences and structures
+   - File format handling
 
-- Standard amino acids and nucleotides
-- Modified residues
-- Ligands and cofactors
-- Glycan components
+4. **Molecular Dynamics:**
+   - Basic molecular dynamics simulations
+   - Energy calculations
+   - Thermal fluctuation analysis
+
+## Examples
+
+See the `notebooks/` directory for example Jupyter notebooks.
+
+## Development
+
+### Setting Up Development Environment
+
+1. Create a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+.\venv\Scripts\activate  # Windows
+```
+
+2. Install development dependencies:
+```bash
+pip install -r requirements-dev.txt
+```
+
+3. Build C++ extensions:
+```bash
+cd dnaflex/data/cpp
+mkdir build && cd build
+cmake ..
+make
+```
+
+### Running Tests
+
+```bash
+pytest tests/
+```
+
+## Future Developments
+
+1. **Enhanced Analysis Features:**
+   - Advanced machine learning models for flexibility prediction
+   - Integration with external molecular dynamics engines
+   - Support for RNA flexibility analysis
+   - Enhanced drug binding predictions
+
+2. **Performance Improvements:**
+   - GPU acceleration for computations
+   - Distributed computing support
+   - Optimized memory usage for large structures
+
+3. **New Features:**
+   - Web interface for analysis
+   - Interactive visualization tools
+   - Integration with popular bioinformatics pipelines
+   - Support for additional file formats
+
+4. **Documentation and Training:**
+   - Interactive tutorials
+   - Video demonstrations
+   - Comprehensive API documentation
+   - Best practices guide
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines and code of conduct.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+Please see CONTRIBUTING.md for guidelines on contributing to DNA-Flex.
 
 ## Citation
 
 If you use DNA-Flex in your research, please cite:
 
-```
-@software{dna_flex2025,
-  author = {kasinadhsarma},
-  title = {DNA-Flex: A Python Library for DNA and Protein Flexibility Analysis},
+```bibtex
+@software{dnaflex2025,
+  author = {Your Name},
+  title = {DNA-Flex: A Python Package for DNA Flexibility Analysis},
   year = {2025},
-  url = {https://github.com/vishwamai/DNA-Flex}
+  publisher = {GitHub},
+  url = {https://github.com/yourusername/DNA-Flex}
 }
 ```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
