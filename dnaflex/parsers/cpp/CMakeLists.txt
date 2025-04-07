@@ -1,32 +1,43 @@
 cmake_minimum_required(VERSION 3.15)
 project(dnaflex_parsers)
 
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Find Python and pybind11
-find_package(Python 3.12 COMPONENTS Interpreter Development REQUIRED)
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
-# Add the pybind11 module
-pybind11_add_module(parsers_cpp
-    module.cc
-    cif_dict_lib.cc
-    cif_dict_pybind.cc
-    fasta_iterator_lib.cc
-    fasta_iterator_pybind.cc
-    msa_conversion_lib.cc
+# Add source files
+set(SOURCES
+    msa_profile_pybind.cc
+    msa_profile.cc
     msa_conversion_pybind.cc
+    msa_conversion.cc
+    cif_dict_pybind.cc
+    fasta_iterator_pybind.cc
+    fasta_iterator.cc
+    module.cc
 )
 
-# Set include directories
+# Create Python module
+pybind11_add_module(parsers_cpp ${SOURCES})
+
+# Include directories
 target_include_directories(parsers_cpp PRIVATE
-    ${PYTHON_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${pybind11_INCLUDE_DIRS}
 )
 
-# Link against Python libraries
-target_link_libraries(parsers_cpp PRIVATE
-    ${PYTHON_LIBRARIES}
+# Set output directory
+set_target_properties(parsers_cpp PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/.."
+)
+
+# Enable optimizations
+target_compile_options(parsers_cpp PRIVATE 
+    -O3
+    -ffast-math
+    -march=native
 )

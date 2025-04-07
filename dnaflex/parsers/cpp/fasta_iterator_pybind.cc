@@ -1,4 +1,5 @@
 #include "fasta_iterator_pybind.h"
+#include <pybind11/numpy.h>
 #include <pybind11/stl.h>
 
 namespace dnaflex {

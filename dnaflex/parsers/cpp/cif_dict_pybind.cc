@@ -1,4 +1,5 @@
 #include "cif_dict_pybind.h"
+#include <pybind11/numpy.h>
 #include <pybind11/stl.h>
 
 namespace dnaflex {
@@ -14,7 +15,7 @@ void init_cif_dict(py::module_& m) {
     py::class_<CifDictionary>(m, "CifDictionary")
         .def(py::init<>())
         .def("parse", &CifDictionary::parse)
-        .def("get_entry", &CifDictionary::get_entry, py::return_value_policy::reference)
+        .def("get_entry", &CifDictionary::get_entry)
         .def("get_categories", &CifDictionary::get_categories);
 }
 

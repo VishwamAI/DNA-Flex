@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <pybind11/numpy.h>
 
 namespace dnaflex {
 namespace parsers {

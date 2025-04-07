@@ -69,94 +69,38 @@ include CMakeFiles/parsers_cpp.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/parsers_cpp.dir/flags.make
 
-CMakeFiles/parsers_cpp.dir/module.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
-CMakeFiles/parsers_cpp.dir/module.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/module.cc
-CMakeFiles/parsers_cpp.dir/module.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/parsers_cpp.dir/module.cc.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/module.cc.o -MF CMakeFiles/parsers_cpp.dir/module.cc.o.d -o CMakeFiles/parsers_cpp.dir/module.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/module.cc
+CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
+CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_profile_pybind.cc
+CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o -MF CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o.d -o CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_profile_pybind.cc
 
-CMakeFiles/parsers_cpp.dir/module.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/module.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/module.cc > CMakeFiles/parsers_cpp.dir/module.cc.i
+CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_profile_pybind.cc > CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.i
 
-CMakeFiles/parsers_cpp.dir/module.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/module.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/module.cc -o CMakeFiles/parsers_cpp.dir/module.cc.s
+CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_profile_pybind.cc -o CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.s
 
-CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
-CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_lib.cc
-CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o -MF CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o.d -o CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_lib.cc
+CMakeFiles/parsers_cpp.dir/msa_profile.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
+CMakeFiles/parsers_cpp.dir/msa_profile.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_profile.cc
+CMakeFiles/parsers_cpp.dir/msa_profile.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/parsers_cpp.dir/msa_profile.cc.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/msa_profile.cc.o -MF CMakeFiles/parsers_cpp.dir/msa_profile.cc.o.d -o CMakeFiles/parsers_cpp.dir/msa_profile.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_profile.cc
 
-CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_lib.cc > CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.i
+CMakeFiles/parsers_cpp.dir/msa_profile.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/msa_profile.cc.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_profile.cc > CMakeFiles/parsers_cpp.dir/msa_profile.cc.i
 
-CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_lib.cc -o CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.s
-
-CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
-CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_pybind.cc
-CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o -MF CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o.d -o CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_pybind.cc
-
-CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_pybind.cc > CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.i
-
-CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_pybind.cc -o CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.s
-
-CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
-CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_lib.cc
-CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o -MF CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o.d -o CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_lib.cc
-
-CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_lib.cc > CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.i
-
-CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_lib.cc -o CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.s
-
-CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
-CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_pybind.cc
-CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o -MF CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o.d -o CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_pybind.cc
-
-CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_pybind.cc > CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.i
-
-CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_pybind.cc -o CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.s
-
-CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
-CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion_lib.cc
-CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o -MF CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o.d -o CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion_lib.cc
-
-CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion_lib.cc > CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.i
-
-CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion_lib.cc -o CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.s
+CMakeFiles/parsers_cpp.dir/msa_profile.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/msa_profile.cc.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_profile.cc -o CMakeFiles/parsers_cpp.dir/msa_profile.cc.s
 
 CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
 CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion_pybind.cc
 CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o -MF CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o.d -o CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion_pybind.cc
 
 CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.i: cmake_force
@@ -167,34 +111,106 @@ CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion_pybind.cc -o CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.s
 
+CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
+CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion.cc
+CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o -MF CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o.d -o CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion.cc
+
+CMakeFiles/parsers_cpp.dir/msa_conversion.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/msa_conversion.cc.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion.cc > CMakeFiles/parsers_cpp.dir/msa_conversion.cc.i
+
+CMakeFiles/parsers_cpp.dir/msa_conversion.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/msa_conversion.cc.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/msa_conversion.cc -o CMakeFiles/parsers_cpp.dir/msa_conversion.cc.s
+
+CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
+CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_pybind.cc
+CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o -MF CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o.d -o CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_pybind.cc
+
+CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_pybind.cc > CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.i
+
+CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/cif_dict_pybind.cc -o CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.s
+
+CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
+CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_pybind.cc
+CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o -MF CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o.d -o CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_pybind.cc
+
+CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_pybind.cc > CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.i
+
+CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator_pybind.cc -o CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.s
+
+CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
+CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator.cc
+CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o -MF CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o.d -o CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator.cc
+
+CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator.cc > CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.i
+
+CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/fasta_iterator.cc -o CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.s
+
+CMakeFiles/parsers_cpp.dir/module.cc.o: CMakeFiles/parsers_cpp.dir/flags.make
+CMakeFiles/parsers_cpp.dir/module.cc.o: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/module.cc
+CMakeFiles/parsers_cpp.dir/module.cc.o: CMakeFiles/parsers_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/parsers_cpp.dir/module.cc.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/parsers_cpp.dir/module.cc.o -MF CMakeFiles/parsers_cpp.dir/module.cc.o.d -o CMakeFiles/parsers_cpp.dir/module.cc.o -c /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/module.cc
+
+CMakeFiles/parsers_cpp.dir/module.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/parsers_cpp.dir/module.cc.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/module.cc > CMakeFiles/parsers_cpp.dir/module.cc.i
+
+CMakeFiles/parsers_cpp.dir/module.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/parsers_cpp.dir/module.cc.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/module.cc -o CMakeFiles/parsers_cpp.dir/module.cc.s
+
 # Object files for target parsers_cpp
 parsers_cpp_OBJECTS = \
-"CMakeFiles/parsers_cpp.dir/module.cc.o" \
-"CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o" \
+"CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o" \
+"CMakeFiles/parsers_cpp.dir/msa_profile.cc.o" \
+"CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o" \
+"CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o" \
 "CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o" \
-"CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o" \
 "CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o" \
-"CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o" \
-"CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o"
+"CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o" \
+"CMakeFiles/parsers_cpp.dir/module.cc.o"
 
 # External object files for target parsers_cpp
 parsers_cpp_EXTERNAL_OBJECTS =
 
-parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/module.cc.o
-parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o
-parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o
-parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o
-parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o
-parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o
-parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o
-parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/build.make
-parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX shared module parsers_cpp.cpython-312-x86_64-linux-gnu.so"
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/msa_profile.cc.o
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.o
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.o
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/fasta_iterator_pybind.cc.o
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/module.cc.o
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/build.make
+/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so: CMakeFiles/parsers_cpp.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX shared module /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/parsers_cpp.dir/link.txt --verbose=$(VERBOSE)
-	/usr/bin/strip /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp/build/parsers_cpp.cpython-312-x86_64-linux-gnu.so
+	/usr/bin/strip /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so
 
 # Rule to build all files generated by this target.
-CMakeFiles/parsers_cpp.dir/build: parsers_cpp.cpython-312-x86_64-linux-gnu.so
+CMakeFiles/parsers_cpp.dir/build: /home/kasinadhsarma/DNA-Flex/dnaflex/parsers/parsers_cpp.cpython-312-x86_64-linux-gnu.so
 .PHONY : CMakeFiles/parsers_cpp.dir/build
 
 CMakeFiles/parsers_cpp.dir/clean:

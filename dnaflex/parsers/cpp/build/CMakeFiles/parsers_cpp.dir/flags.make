@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -Dparsers_cpp_EXPORTS
 
-CXX_INCLUDES = -isystem /usr/include/python3.12
+CXX_INCLUDES = -I/home/kasinadhsarma/DNA-Flex/dnaflex/parsers/cpp -isystem /usr/include/python3.12
 
-CXX_FLAGS = -std=gnu++17 -fPIC -fvisibility=hidden -flto -fno-fat-lto-objects
+CXX_FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -fvisibility=hidden -O3 -ffast-math -march=native -flto -fno-fat-lto-objects
 

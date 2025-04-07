@@ -2,7 +2,12 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 #include "fasta_iterator_lib.h"
+
+namespace py = pybind11;
 
 namespace dnaflex {
 namespace parsers {
@@ -12,21 +17,20 @@ public:
     MSAConverter();
     ~MSAConverter();
 
-    // Convert FASTA alignment to matrix format
-    std::vector<std::vector<char>> fasta_to_matrix(const std::string& filename);
-    
-    // Convert matrix back to FASTA format
-    bool matrix_to_fasta(const std::vector<std::vector<char>>& matrix,
+    py::array_t<char> fasta_to_matrix(const std::string& filename);
+    bool matrix_to_fasta(const py::array_t<char>& matrix,
                         const std::vector<std::string>& headers,
                         const std::string& output_file);
 
-    // Utility functions
-    static bool validate_alignment(const std::vector<std::vector<char>>& matrix);
-    static size_t get_alignment_length(const std::vector<std::vector<char>>& matrix);
-    static size_t get_sequence_count(const std::vector<std::vector<char>>& matrix);
+    static bool validate_alignment(const py::array_t<char>& matrix);
+    static size_t get_alignment_length(const py::array_t<char>& matrix);
+    static size_t get_sequence_count(const py::array_t<char>& matrix);
 
 private:
-    bool check_sequence_lengths(const std::vector<FastaEntry>& entries);
+    std::unique_ptr<FastaIterator> fasta_iter_;
+    size_t max_seq_len_;
+    std::vector<std::string> sequences_;
+    std::vector<std::string> headers_;
 };
 
 } // namespace parsers

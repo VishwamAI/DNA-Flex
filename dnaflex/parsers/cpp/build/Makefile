@@ -129,30 +129,6 @@ parsers_cpp/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/build
 .PHONY : parsers_cpp/fast
 
-cif_dict_lib.o: cif_dict_lib.cc.o
-.PHONY : cif_dict_lib.o
-
-# target to build an object file
-cif_dict_lib.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.o
-.PHONY : cif_dict_lib.cc.o
-
-cif_dict_lib.i: cif_dict_lib.cc.i
-.PHONY : cif_dict_lib.i
-
-# target to preprocess a source file
-cif_dict_lib.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.i
-.PHONY : cif_dict_lib.cc.i
-
-cif_dict_lib.s: cif_dict_lib.cc.s
-.PHONY : cif_dict_lib.s
-
-# target to generate assembly for a file
-cif_dict_lib.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/cif_dict_lib.cc.s
-.PHONY : cif_dict_lib.cc.s
-
 cif_dict_pybind.o: cif_dict_pybind.cc.o
 .PHONY : cif_dict_pybind.o
 
@@ -177,29 +153,29 @@ cif_dict_pybind.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/cif_dict_pybind.cc.s
 .PHONY : cif_dict_pybind.cc.s
 
-fasta_iterator_lib.o: fasta_iterator_lib.cc.o
-.PHONY : fasta_iterator_lib.o
+fasta_iterator.o: fasta_iterator.cc.o
+.PHONY : fasta_iterator.o
 
 # target to build an object file
-fasta_iterator_lib.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.o
-.PHONY : fasta_iterator_lib.cc.o
+fasta_iterator.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.o
+.PHONY : fasta_iterator.cc.o
 
-fasta_iterator_lib.i: fasta_iterator_lib.cc.i
-.PHONY : fasta_iterator_lib.i
+fasta_iterator.i: fasta_iterator.cc.i
+.PHONY : fasta_iterator.i
 
 # target to preprocess a source file
-fasta_iterator_lib.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.i
-.PHONY : fasta_iterator_lib.cc.i
+fasta_iterator.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.i
+.PHONY : fasta_iterator.cc.i
 
-fasta_iterator_lib.s: fasta_iterator_lib.cc.s
-.PHONY : fasta_iterator_lib.s
+fasta_iterator.s: fasta_iterator.cc.s
+.PHONY : fasta_iterator.s
 
 # target to generate assembly for a file
-fasta_iterator_lib.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/fasta_iterator_lib.cc.s
-.PHONY : fasta_iterator_lib.cc.s
+fasta_iterator.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/fasta_iterator.cc.s
+.PHONY : fasta_iterator.cc.s
 
 fasta_iterator_pybind.o: fasta_iterator_pybind.cc.o
 .PHONY : fasta_iterator_pybind.o
@@ -249,29 +225,29 @@ module.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/module.cc.s
 .PHONY : module.cc.s
 
-msa_conversion_lib.o: msa_conversion_lib.cc.o
-.PHONY : msa_conversion_lib.o
+msa_conversion.o: msa_conversion.cc.o
+.PHONY : msa_conversion.o
 
 # target to build an object file
-msa_conversion_lib.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.o
-.PHONY : msa_conversion_lib.cc.o
+msa_conversion.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_conversion.cc.o
+.PHONY : msa_conversion.cc.o
 
-msa_conversion_lib.i: msa_conversion_lib.cc.i
-.PHONY : msa_conversion_lib.i
+msa_conversion.i: msa_conversion.cc.i
+.PHONY : msa_conversion.i
 
 # target to preprocess a source file
-msa_conversion_lib.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.i
-.PHONY : msa_conversion_lib.cc.i
+msa_conversion.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_conversion.cc.i
+.PHONY : msa_conversion.cc.i
 
-msa_conversion_lib.s: msa_conversion_lib.cc.s
-.PHONY : msa_conversion_lib.s
+msa_conversion.s: msa_conversion.cc.s
+.PHONY : msa_conversion.s
 
 # target to generate assembly for a file
-msa_conversion_lib.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_conversion_lib.cc.s
-.PHONY : msa_conversion_lib.cc.s
+msa_conversion.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_conversion.cc.s
+.PHONY : msa_conversion.cc.s
 
 msa_conversion_pybind.o: msa_conversion_pybind.cc.o
 .PHONY : msa_conversion_pybind.o
@@ -297,6 +273,54 @@ msa_conversion_pybind.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_conversion_pybind.cc.s
 .PHONY : msa_conversion_pybind.cc.s
 
+msa_profile.o: msa_profile.cc.o
+.PHONY : msa_profile.o
+
+# target to build an object file
+msa_profile.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_profile.cc.o
+.PHONY : msa_profile.cc.o
+
+msa_profile.i: msa_profile.cc.i
+.PHONY : msa_profile.i
+
+# target to preprocess a source file
+msa_profile.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_profile.cc.i
+.PHONY : msa_profile.cc.i
+
+msa_profile.s: msa_profile.cc.s
+.PHONY : msa_profile.s
+
+# target to generate assembly for a file
+msa_profile.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_profile.cc.s
+.PHONY : msa_profile.cc.s
+
+msa_profile_pybind.o: msa_profile_pybind.cc.o
+.PHONY : msa_profile_pybind.o
+
+# target to build an object file
+msa_profile_pybind.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.o
+.PHONY : msa_profile_pybind.cc.o
+
+msa_profile_pybind.i: msa_profile_pybind.cc.i
+.PHONY : msa_profile_pybind.i
+
+# target to preprocess a source file
+msa_profile_pybind.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.i
+.PHONY : msa_profile_pybind.cc.i
+
+msa_profile_pybind.s: msa_profile_pybind.cc.s
+.PHONY : msa_profile_pybind.s
+
+# target to generate assembly for a file
+msa_profile_pybind.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parsers_cpp.dir/build.make CMakeFiles/parsers_cpp.dir/msa_profile_pybind.cc.s
+.PHONY : msa_profile_pybind.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -306,27 +330,30 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... parsers_cpp"
-	@echo "... cif_dict_lib.o"
-	@echo "... cif_dict_lib.i"
-	@echo "... cif_dict_lib.s"
 	@echo "... cif_dict_pybind.o"
 	@echo "... cif_dict_pybind.i"
 	@echo "... cif_dict_pybind.s"
-	@echo "... fasta_iterator_lib.o"
-	@echo "... fasta_iterator_lib.i"
-	@echo "... fasta_iterator_lib.s"
+	@echo "... fasta_iterator.o"
+	@echo "... fasta_iterator.i"
+	@echo "... fasta_iterator.s"
 	@echo "... fasta_iterator_pybind.o"
 	@echo "... fasta_iterator_pybind.i"
 	@echo "... fasta_iterator_pybind.s"
 	@echo "... module.o"
 	@echo "... module.i"
 	@echo "... module.s"
-	@echo "... msa_conversion_lib.o"
-	@echo "... msa_conversion_lib.i"
-	@echo "... msa_conversion_lib.s"
+	@echo "... msa_conversion.o"
+	@echo "... msa_conversion.i"
+	@echo "... msa_conversion.s"
 	@echo "... msa_conversion_pybind.o"
 	@echo "... msa_conversion_pybind.i"
 	@echo "... msa_conversion_pybind.s"
+	@echo "... msa_profile.o"
+	@echo "... msa_profile.i"
+	@echo "... msa_profile.s"
+	@echo "... msa_profile_pybind.o"
+	@echo "... msa_profile_pybind.i"
+	@echo "... msa_profile_pybind.s"
 .PHONY : help
 
 
