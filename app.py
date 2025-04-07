@@ -14,7 +14,7 @@ from dnaflex.models.generative import dna_generation
 from dnaflex.models.drug_binding import binding_analysis
 from dnaflex.models.mutation_analysis import mutation_effects
 from dnaflex.models.nlp_analysis import sequence_nlp
-from dnaflex.models.protein_llm import BioLLM
+from dnaflex.models.dna_llm import BioLLM
 
 # Initialize models
 dna_model = BioLLM(model_type='dna')

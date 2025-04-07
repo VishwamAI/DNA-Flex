@@ -2,7 +2,7 @@
 
 import pytest
 import numpy as np
-from dnaflex.models.protein_llm import BioLLM
+from dnaflex.models.dna_llm import BioLLM
 import jax as jnp
 @pytest.fixture
 def protein_model():
