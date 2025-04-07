@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 from dnaflex.constants import chemical_components
-from dnaflex.structure import structure
+from dnaflex.structure.structure import Structure
 
 @dataclass
 class Input:
@@ -11,7 +11,7 @@ class Input:
     
     name: str
     sequence: str
-    structure: Optional[Structure] = None
+    structure: Optional[Structure] = None 
     features: Optional[Dict[str, List[float]]] = None
     
     def to_structure(self, ccd: chemical_components.Ccd) -> Structure:
@@ -20,7 +20,7 @@ class Input:
             return self.structure
             
         # Create structure from sequence
-        struc = structure.Structure.from_sequence(
+        struc = Structure.from_sequence(
             sequence=self.sequence,
             ccd=ccd,
             name=self.name

@@ -3,7 +3,7 @@
 import numpy as np
 import jax.numpy as jnp
 from typing import Any, Dict, List, Optional, Tuple, Union
-
+import jax
 def compute_pairwise_distances(coords: np.ndarray) -> np.ndarray:
     """Compute pairwise distances between 3D coordinates.
     
