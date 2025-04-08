@@ -1,180 +1,314 @@
-# DNA-Flex API Reference
+# DNA-Flex API Documentation
 
-## Core Components
+## Overview
 
-### Flexibility Analysis
+The DNA-Flex API provides a comprehensive interface for DNA sequence analysis, structure prediction, and flexibility assessment. This RESTful API is built with FastAPI and supports async operations, authentication, and rate limiting.
 
-#### FlexibilityAnalyzer
-Main class for analyzing DNA flexibility.
+## Authentication
 
-```python
-from dnaflex.flexibility import FlexibilityAnalyzer
+All protected endpoints require JWT authentication. To authenticate:
 
-analyzer = FlexibilityAnalyzer(structure)
+1. Obtain a token using the `/token` endpoint
+2. Include the token in the Authorization header: `Bearer <token>`
+
+```bash
+curl -X POST "http://localhost:8000/token" \
+     -d "username=your-username&password=your-password"
 ```
 
-Methods:
-- `predict_flexibility(chain)`: Calculate flexibility scores for each base
-- `calculate_base_step_parameters(chain)`: Calculate base step parameters
-- `identify_flexible_regions(chain, window_size=4, threshold=0.6)`: Find flexible regions
+## Rate Limiting
 
-### Structure Handling
+- Standard endpoints: 5 requests/minute
+- Health check: 10 requests/minute
+- Batch processing: 2 requests/minute
 
-#### DnaStructure
-Container for DNA molecule structure.
+## Endpoints
 
-```python
-from dnaflex.structure.structure import DnaStructure
+### Authentication
 
-structure = DnaStructure()
+#### POST /token
+
+Get authentication token.
+
+**Request:**
+```json
+{
+    "username": "string",
+    "password": "string"
+}
 ```
 
-Methods:
-- `add_chain(chain)`: Add a new chain to structure
-- `get_chain(chain_id)`: Get chain by ID
-- `calculate_center_of_mass()`: Calculate structure's center of mass
-- `calculate_radius_of_gyration()`: Calculate radius of gyration
-
-#### DnaChain
-Represents a DNA chain (strand).
-
-Methods:
-- `add_residue(residue)`: Add a residue to chain
-- `get_residue(number)`: Get residue by number
-- `sequence`: Property returning DNA sequence
-
-### Data Management
-
-#### DataManager
-Central manager for data operations.
-
-```python
-from dnaflex.data import DataManager
-
-manager = DataManager(data_dir="path/to/data", email="user@example.com")
+**Response:**
+```json
+{
+    "access_token": "string",
+    "token_type": "bearer"
+}
 ```
 
-Methods:
-- `get_sequence(identifier, source)`: Get sequence data
-- `get_structure(identifier, source)`: Get structure data
-- `save_sequence(sequence_data, identifier)`: Save sequence
-- `save_structure(structure_data, identifier)`: Save structure
+### System Information
 
-#### DataCache
-Cache handler for data operations.
+#### GET /health
 
-Methods:
-- `get(key)`: Retrieve cached item
-- `set(key, value)`: Store item in cache
-- `invalidate(key)`: Remove item from cache
-- `cleanup()`: Remove expired items
+Check API health status.
 
-### Molecular Dynamics
-
-#### MolecularDynamics
-DNA molecular dynamics simulation.
-
-```python
-from dnaflex.models.dynamics import MolecularDynamics
-
-md = MolecularDynamics()
+**Response:**
+```json
+{
+    "status": "healthy",
+    "version": "1.0.0",
+    "timestamp": "2025-04-08T13:41:18.371Z"
+}
 ```
 
-Methods:
-- `simulate(sequence)`: Run molecular dynamics simulation
-- `_simulate_thermal_fluctuations(sequence_length)`: Calculate thermal fluctuations
-- `_calculate_energies(sequence)`: Calculate energy components
+#### GET /info
 
-### Drug Binding Analysis
+Get API information and available endpoints.
 
-#### BindingAnalyzer
-Analyze drug binding to DNA.
-
-Methods:
-- `_flexibility_score(sequence, site)`: Calculate flexibility-based binding score
-- `_calculate_binding_propensity(scored_sites)`: Calculate binding propensity
-
-### Data Processing
-
-#### DNADataProcessor
-Process DNA sequence and structure data.
-
-```python
-from dnaflex.models.dna_data_processing import DNADataProcessor
-
-processor = DNADataProcessor(config)
+**Response:**
+```json
+{
+    "name": "DNA-Flex API",
+    "version": "1.0.0",
+    "description": "Advanced DNA sequence analysis and flexibility prediction",
+    "endpoints": [
+        {
+            "path": "/predict",
+            "method": "POST",
+            "description": "Predict DNA sequence properties"
+        },
+        ...
+    ]
+}
 ```
 
-Methods:
-- `process_sequence(sequence)`: Process DNA sequence into features
-- `process_structure(structure)`: Process structure data
-- `_calculate_gc_content(sequence)`: Calculate GC content
-- `_extract_kmers(sequence)`: Extract k-mer frequencies
+### Analysis Endpoints
 
-## Constants and Utilities
+#### POST /predict
 
-### Atom Types and Layouts
-```python
-from dnaflex.constants import atom_types, atom_layouts
+Predict DNA sequence properties with async background processing.
 
-# Access constants
-DNA_RESIDUES = atom_types.DNA_RESIDUES
-BACKBONE_ATOMS = atom_layouts.BACKBONE_ATOMS
+**Request:**
+```json
+{
+    "sequence": "ATGCATGCATGC",
+    "description": "Sample sequence"
+}
 ```
 
-### Common Utilities
-```python
-from dnaflex.models.components import utils
-
-# Calculate distances
-distances = utils.compute_pairwise_distances(coords)
-
-# Normalize vectors
-normalized = utils.normalize_vector(vectors)
+**Response:**
+```json
+{
+    "request_id": "uuid-string",
+    "status": "pending",
+    "created_at": "2025-04-08T13:41:18.371Z"
+}
 ```
 
-## Advanced Features
+#### GET /tasks/{task_id}
 
-### Multiple Sequence Alignment
-```python
-from dnaflex.data.cpp.msa_profile_pybind import MSAProfile
+Get the status and results of an analysis task.
 
-profile = MSAProfile()
-profile.add_sequence("ATCG")
-profile.compute_profile()
+**Response:**
+```json
+{
+    "request_id": "uuid-string",
+    "status": "completed",
+    "result": {
+        "analysis": {
+            "gc_content": 50.0,
+            "stability_scores": [...],
+            "motifs": [...],
+            "secondary_structures": [...]
+        },
+        "dynamics": {
+            "rmsd": [...],
+            "rmsf": [...],
+            "energies": {...}
+        },
+        "variations": [...],
+        "binding_sites": [...],
+        "mutations": [...],
+        "nlp_insights": {...}
+    },
+    "created_at": "2025-04-08T13:41:18.371Z",
+    "completed_at": "2025-04-08T13:41:20.371Z"
+}
 ```
 
-Methods:
-- `add_sequence(sequence)`: Add sequence to alignment
-- `compute_profile()`: Compute alignment profile
-- `get_conservation_scores()`: Get conservation scores
-- `get_consensus_sequence()`: Get consensus sequence
+#### POST /analyze
 
-## Error Handling
+Direct DNA sequence analysis (synchronous).
 
-Most methods will raise appropriate exceptions with descriptive messages:
-
-- `ValueError`: Invalid input values
-- `FileNotFoundError`: Missing files
-- `RuntimeError`: Computation errors
-- `KeyError`: Missing keys in data structures
-
-## Configuration
-
-### BaseConfig
-Base configuration class.
-
-```python
-from dnaflex.common.base_config import BaseConfig
-
-class MyConfig(BaseConfig):
-    def __init__(self, param1, param2):
-        self.param1 = param1
-        self.param2 = param2
+**Request:**
+```json
+{
+    "sequence": "ATGCATGCATGC",
+    "description": "Sample sequence"
+}
 ```
 
-Methods:
-- `create(**kwargs)`: Create config with defaults
-- `to_dict()`: Convert to dictionary
-- `from_dict(config_dict)`: Create from dictionary
-- `update(**kwargs)`: Update config values
+**Response:**
+```json
+{
+    "sequence": "ATGCATGCATGC",
+    "analysis": {
+        "length": 12,
+        "gc_content": 50.0,
+        "base_composition": {
+            "A": 0.25,
+            "T": 0.25,
+            "G": 0.25,
+            "C": 0.25
+        },
+        "stability_scores": [...],
+        "sequence_complexity": {...},
+        "motifs": [...],
+        "secondary_structures": [...],
+        "repeats": {...}
+    },
+    "timestamp": "2025-04-08T13:41:18.371Z"
+}
+```
+
+#### POST /batch
+
+Batch analyze multiple DNA sequences.
+
+**Request:**
+- Multipart form data with file upload
+- Optional query parameter: `max_sequences` (default: 10, max: 100)
+
+**Response:**
+```json
+{
+    "total_sequences": 5,
+    "processed": 5,
+    "results": [
+        {
+            "sequence": "ATGC...",
+            "analysis": {...}
+        },
+        ...
+    ],
+    "timestamp": "2025-04-08T13:41:18.371Z"
+}
+```
+
+### Statistics
+
+#### GET /stats
+
+Get API usage statistics.
+
+**Response:**
+```json
+{
+    "total_requests": 100,
+    "completed_tasks": 95,
+    "failed_tasks": 5,
+    "timestamp": "2025-04-08T13:41:18.371Z"
+}
+```
+
+## Error Responses
+
+All endpoints return standard HTTP status codes and a consistent error response format:
+
+```json
+{
+    "detail": "Error message",
+    "status_code": 400,
+    "timestamp": "2025-04-08T13:41:18.371Z",
+    "path": "/endpoint",
+    "method": "POST"
+}
+```
+
+Common status codes:
+- 200: Success
+- 400: Bad Request
+- 401: Unauthorized
+- 404: Not Found
+- 429: Too Many Requests
+- 500: Internal Server Error
+
+## Data Models
+
+### SequenceInput
+```json
+{
+    "sequence": "string",
+    "description": "string (optional)"
+}
+```
+
+### AnalysisResult
+```json
+{
+    "request_id": "string",
+    "status": "string",
+    "result": "object (optional)",
+    "error": "string (optional)",
+    "created_at": "datetime",
+    "completed_at": "datetime (optional)"
+}
+```
+
+## Examples
+
+### Python Client Example
+
+```python
+import requests
+
+class DNAFlexClient:
+    def __init__(self, base_url="http://localhost:8000"):
+        self.base_url = base_url
+        self.token = None
+    
+    def authenticate(self, username, password):
+        response = requests.post(
+            f"{self.base_url}/token",
+            data={"username": username, "password": password}
+        )
+        self.token = response.json()["access_token"]
+        
+    def predict(self, sequence, description=None):
+        headers = {"Authorization": f"Bearer {self.token}"}
+        data = {"sequence": sequence}
+        if description:
+            data["description"] = description
+            
+        response = requests.post(
+            f"{self.base_url}/predict",
+            headers=headers,
+            json=data
+        )
+        return response.json()
+    
+    def get_task_status(self, task_id):
+        headers = {"Authorization": f"Bearer {self.token}"}
+        response = requests.get(
+            f"{self.base_url}/tasks/{task_id}",
+            headers=headers
+        )
+        return response.json()
+
+# Usage
+client = DNAFlexClient()
+client.authenticate("username", "password")
+result = client.predict("ATGCATGCATGC")
+task_id = result["request_id"]
+
+# Poll for results
+while True:
+    status = client.get_task_status(task_id)
+    if status["status"] in ["completed", "failed"]:
+        break
+    time.sleep(1)
+```
+
+## WebSocket Support (Coming Soon)
+
+Real-time task status updates will be available through WebSocket connections at `/ws/tasks/{task_id}`.

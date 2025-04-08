@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNA-Flex - DNA Analysis Platform</title>
+    <style>
+        :root {
+            --primary-color: #0057b7;
+            --secondary-color: #ffd700;
+            --bg-color: #f5f5f5;
+            --text-color: #333;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        main {
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .button:hover {
+            background-color: #004094;
+        }
+        
+        .auth-section {
+            background: #fff5cc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        code {
+            background: #f0f0f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .endpoints {
+            margin: 2rem 0;
+        }
+
+        .endpoint {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .method {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>DNA-Flex</h1>
+            <p class="subtitle">Advanced DNA Sequence Analysis Platform</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <h2>Getting Started</h2>
+            <p>DNA-Flex provides powerful tools for DNA sequence analysis, structure prediction, and AI-powered genomics research.</p>
+        </div>
+
+        <div class="auth-section">
+            <h2>Authentication</h2>
+            <p>To use the API endpoints, you need to authenticate first:</p>
+            <ol>
+                <li>Get an access token by making a POST request to <code>/token</code> with your credentials</li>
+                <li>Include the token in the Authorization header: <code>Bearer your-token-here</code></li>
+            </ol>
+            <p>Example using curl:</p>
+            <code>curl -X POST "http://localhost:8000/token" -d "username=your-username&password=your-password"</code>
+        </div>
+
+        <h2>Features</h2>
+        <ul class="feature-list">
+            <li class="feature-item">
+                <h3>DNA Sequence Analysis</h3>
+                <p>Comprehensive analysis of DNA sequences including structure prediction and flexibility assessment.</p>
+            </li>
+            <li class="feature-item">
+                <h3>Protein Structure Prediction</h3>
+                <p>Advanced machine learning models for protein structure and function prediction.</p>
+            </li>
+            <li class="feature-item">
+                <h3>Mutation Analysis</h3>
+                <p>Predict the effects of mutations and identify potential binding sites.</p>
+            </li>
+            <li class="feature-item">
+                <h3>AI-Powered Genomics</h3>
+                <p>Leverage cutting-edge AI models for sequence analysis and prediction.</p>
+            </li>
+        </ul>
+
+        <div class="endpoints">
+            <h2>Key Endpoints</h2>
+            <div class="endpoint">
+                <span class="method">POST</span> <code>/predict</code>
+                <p>Predict DNA sequence properties with async background processing</p>
+            </div>
+            <div class="endpoint">
+                <span class="method">POST</span> <code>/analyze</code>
+                <p>Analyze DNA sequence properties</p>
+            </div>
+            <div class="endpoint">
+                <span class="method">POST</span> <code>/batch</code>
+                <p>Batch analyze multiple DNA sequences</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Documentation</h2>
+            <p>For detailed API documentation and examples, visit:</p>
+            <p>
+                <a href="/docs" class="button">Interactive API Docs</a>
+                <a href="/redoc" class="button">ReDoc API Reference</a>
+            </p>
+        </div>
+    </main>
+</body>
+</html>

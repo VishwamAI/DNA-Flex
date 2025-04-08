@@ -1,188 +1,148 @@
 # DNA-Flex
 
-DNA-Flex is a Python package for analyzing and predicting DNA flexibility and structural dynamics. It provides tools for molecular dynamics simulations, flexibility analysis, and structure-based predictions for DNA sequences.
+DNA-Flex is a powerful Python library for analyzing DNA sequence flexibility, structure prediction, and advanced genomic analysis using machine learning approaches.
 
 ## Features
 
-- DNA flexibility analysis based on sequence and structure
-- Molecular dynamics simulations for DNA molecules
-- Multiple sequence alignment and profile analysis
-- Structure-based predictions and analysis
-- Drug binding site prediction
-- Efficient data caching and management
-- C++ accelerated computations via pybind11
+- 🧬 **DNA Sequence Analysis**
+  - Comprehensive sequence analysis
+  - Structure prediction
+  - Flexibility assessment
+  - Mutation impact analysis
 
-## Installation
+- 🤖 **AI-Powered Analysis**
+  - Machine learning models for sequence analysis
+  - Deep learning-based structure prediction
+  - NLP-based sequence pattern recognition
+
+- ⚡ **High-Performance Computing**
+  - JAX-accelerated computations
+  - Async background processing
+  - Batch analysis support
+  - C++ optimized core components
+
+- 🔄 **API Integration**
+  - RESTful API with FastAPI
+  - JWT Authentication
+  - Rate limiting
+  - Background task processing
+  - Swagger/OpenAPI documentation
+
+## Quick Start
+
+### Installation
 
 ```bash
+# Basic installation
 pip install dnaflex
-```
 
-### Development Installation
-
-```bash
-git clone https://github.com/yourusername/DNA-Flex.git
+# Development installation
+git clone https://github.com/vishwamai/DNA-Flex.git
 cd DNA-Flex
 pip install -e '.[dev]'
 ```
 
-## Quick Start
+### Basic Usage
 
 ```python
-from dnaflex.structure import DnaStructure
-from dnaflex.flexibility import FlexibilityAnalyzer
+from dnaflex.models.analysis import analyze
+from dnaflex.models.dynamics import molecular_dynamics
 
-# Create structure from PDB file
-structure = DnaStructure.from_pdb('dna.pdb')
+# Analyze DNA sequence
+sequence = "ATGCTAGCTAGCT"
+result = analyze(sequence)
+print(f"GC Content: {result['gc_content']}%")
+print(f"Flexibility Score: {result['flexibility_score']}")
 
-# Analyze flexibility
-analyzer = FlexibilityAnalyzer(structure)
-flexibility_scores = analyzer.predict_flexibility(structure.chains[0])
-flexible_regions = analyzer.identify_flexible_regions(structure.chains[0])
-
-print("Flexible regions:", flexible_regions)
+# Run molecular dynamics simulation
+dynamics = molecular_dynamics.simulate(sequence)
 ```
+
+### API Usage
+
+```python
+import requests
+
+# Get authentication token
+response = requests.post(
+    "http://localhost:8000/token",
+    data={"username": "your-username", "password": "your-password"}
+)
+token = response.json()["access_token"]
+
+# Analyze sequence
+headers = {"Authorization": f"Bearer {token}"}
+response = requests.post(
+    "http://localhost:8000/predict",
+    headers=headers,
+    json={"sequence": "ATGCTAGCTAGCT"}
+)
+result = response.json()
+```
+
+## Architecture
+
+DNA-Flex is built with a modular architecture:
+
+- **Core Analysis Engine**: Built in Python with C++ extensions
+- **Machine Learning Models**: Using JAX and deep learning
+- **REST API**: FastAPI with async processing
+- **Data Management**: Efficient caching and data providers
+
+## API Documentation
+
+Visit our [API Documentation](docs/api.md) for detailed endpoint information.
+
+## Development Guide
+
+See our [Developer Guide](docs/developer_guide.md) for setup and contribution guidelines.
 
 ## Project Structure
 
 ```
 dnaflex/
-├── __init__.py
-├── app.py                   # Main application entry point
-├── flexibility.py          # Core flexibility analysis
-├── common/                 # Common utilities and base classes
-│   ├── base_config.py
-├── constants/             # Constant definitions
-│   ├── atom_layouts.py
-│   ├── atom_types.py
-│   ├── chemical_components.py
-│   ├── mmcif_names.py
-│   ├── residue_names.py
-├── data/                  # Data loading and management
-│   ├── cache.py
-│   ├── loader.py
-│   ├── manager.py
-│   ├── providers.py
-│   ├── cpp/              # C++ accelerated computations
-│   │   ├── msa_profile_pybind.cc
-│   │   ├── msa_profile_pybind.h
-├── models/               # Analysis and prediction models
-│   ├── analysis.py
-│   ├── dna_data_processing.py
-│   ├── dna_llm.py
-│   ├── drug_binding.py
-│   ├── dynamics.py
-│   ├── features.py
-├── parsers/              # File format parsers
-│   ├── parser.py
-├── structure/            # Structure representation
-│   ├── structure.py
-├── tests/               # Test suite
+├── models/          # Core analysis models
+├── structure/       # Structure handling
+├── flexibility/     # Flexibility analysis
+├── parsers/         # File format parsers
+├── data/           # Data management
+└── tests/          # Test suite
 ```
 
-## Documentation
+## Configuration
 
-Full documentation is available at [readthedocs](https://dnaflex.readthedocs.io/).
+Environment variables:
+- `DNA_FLEX_SECRET_KEY`: JWT secret key
+- `DNA_FLEX_API_PREFIX`: API prefix (default: /api/v1)
+- `DNA_FLEX_RATE_LIMIT`: Rate limit (requests/minute)
 
-### Core Components
-
-1. **Flexibility Analysis:**
-   - Sequence-based flexibility prediction
-   - Structure-based dynamics analysis
-   - Base step parameter calculations
-
-2. **Structure Management:**
-   - PDB file parsing and writing
-   - Structure manipulation and analysis
-   - Coordinate system transformations
-
-3. **Data Management:**
-   - Efficient caching system
-   - Data providers for sequences and structures
-   - File format handling
-
-4. **Molecular Dynamics:**
-   - Basic molecular dynamics simulations
-   - Energy calculations
-   - Thermal fluctuation analysis
-
-## Examples
-
-See the `notebooks/` directory for example Jupyter notebooks.
-
-## Development
-
-### Setting Up Development Environment
-
-1. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-.\venv\Scripts\activate  # Windows
-```
-
-2. Install development dependencies:
-```bash
-pip install -r requirements-dev.txt
-```
-
-3. Build C++ extensions:
-```bash
-cd dnaflex/data/cpp
-mkdir build && cd build
-cmake ..
-make
-```
-
-### Running Tests
+## Testing
 
 ```bash
-pytest tests/
+# Run all tests
+pytest
+
+# Run specific test suite
+pytest dnaflex/tests/test_integration.py
 ```
-
-## Future Developments
-
-1. **Enhanced Analysis Features:**
-   - Advanced machine learning models for flexibility prediction
-   - Integration with external molecular dynamics engines
-   - Support for RNA flexibility analysis
-   - Enhanced drug binding predictions
-
-2. **Performance Improvements:**
-   - GPU acceleration for computations
-   - Distributed computing support
-   - Optimized memory usage for large structures
-
-3. **New Features:**
-   - Web interface for analysis
-   - Interactive visualization tools
-   - Integration with popular bioinformatics pipelines
-   - Support for additional file formats
-
-4. **Documentation and Training:**
-   - Interactive tutorials
-   - Video demonstrations
-   - Comprehensive API documentation
-   - Best practices guide
 
 ## Contributing
 
-Please see CONTRIBUTING.md for guidelines on contributing to DNA-Flex.
+Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Citation
 
 If you use DNA-Flex in your research, please cite:
 
 ```bibtex
-@software{dnaflex2025,
+@software{dna_flex_2025,
+  title = {DNA-Flex: DNA Sequence Analysis and Structure Prediction},
   author = {Your Name},
-  title = {DNA-Flex: A Python Package for DNA Flexibility Analysis},
   year = {2025},
-  publisher = {GitHub},
   url = {https://github.com/yourusername/DNA-Flex}
 }
 ```
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.

@@ -1,340 +1,307 @@
 # DNA-Flex Developer Guide
 
-## Architecture Overview
+## Development Setup
 
-DNA-Flex is built with a modular architecture consisting of several key components:
+### Prerequisites
+
+- Python 3.8+
+- C++ compiler (for optimized components)
+- CMake 3.10+
+- JAX compatible environment
+
+### Environment Setup
+
+1. Create a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+```
+
+2. Install dependencies:
+```bash
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Install package in editable mode
+pip install -e .
+```
+
+3. Configure environment variables:
+```bash
+export DNA_FLEX_SECRET_KEY="your-secret-key"
+export DNA_FLEX_API_PREFIX="/api/v1"
+export DNA_FLEX_RATE_LIMIT="5/minute"
+```
+
+## Project Structure
 
 ### Core Components
 
-1. **Structure Module**
-   - Handles molecular structure representation
-   - Manages atom layouts and coordinates
-   - Provides structure manipulation utilities
+#### 1. DNA Analysis Models (`dnaflex/models/`)
+- `analysis.py`: Core sequence analysis
+- `dna_llm.py`: Language models for DNA
+- `dynamics.py`: Molecular dynamics simulation
+- `drug_binding.py`: Drug binding site prediction
+- `features.py`: Feature extraction utilities
+- `mutation_analysis.py`: Mutation impact analysis
 
-2. **Analysis Module**
-   - Implements flexibility analysis algorithms
-   - Handles sequence analysis
-   - Provides feature extraction
+#### 2. Structure Handling (`dnaflex/structure/`)
+- `structure.py`: DNA structure representation
+- `chemical_components.py`: Chemical component definitions
+- `sterics.py`: Steric clash checking
 
-3. **Data Management**
-   - Manages data loading and caching
-   - Handles external data sources
-   - Provides format conversion utilities
+#### 3. Parsers (`dnaflex/parsers/`)
+- `parser.py`: Main parser implementation
+- C++ optimized parsers in `cpp/`
 
-### Design Principles
+#### 4. Data Management (`dnaflex/data/`)
+- `cache.py`: Caching mechanisms
+- `loader.py`: Data loading utilities
+- `manager.py`: Data management
+- `providers.py`: Data providers
 
-1. **Modularity**
-   - Independent components
-   - Clear interfaces
-   - Minimal coupling
+#### 5. JAX Components (`dnaflex/jax/`)
+- Optimized computational components
+- Neural network architectures
+- Geometry calculations
 
-2. **Extensibility**
-   - Plugin architecture for new analyses
-   - Customizable parameters
-   - Easy integration of new models
+### API Components
 
-3. **Performance**
-   - Efficient data structures
-   - Optimized algorithms
-   - Caching mechanisms
+#### FastAPI Application (`app.py`)
+- Authentication
+- Rate limiting
+- Error handling
+- Async task processing
 
-## Development Workflow
-
-### Setting Up Development Environment
-
-1. **Clone the Repository**
-```bash
-git clone https://github.com/yourusername/DNA-Flex.git
-cd DNA-Flex
-```
-
-2. **Create Virtual Environment**
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. **Install Dependencies**
-```bash
-pip install -r requirements-dev.txt
-```
-
-### Code Organization
-
-```
-dnaflex/
-├── models/          # Core analysis models
-├── structure/       # Structure handling
-├── data/           # Data management
-├── constants/       # Constants and configurations
-├── parsers/        # File format parsers
-└── tests/          # Test suites
-```
-
-### Development Process
-
-1. **Create Feature Branch**
-```bash
-git checkout -b feature/your-feature-name
-```
-
-2. **Write Tests First**
-```python
-# tests/test_your_feature.py
-def test_new_feature():
-    # Test setup
-    expected = ...
-    result = your_feature()
-    assert result == expected
-```
-
-3. **Implement Feature**
-```python
-# dnaflex/your_module.py
-def your_feature():
-    # Implementation
-    return result
-```
-
-4. **Run Tests**
-```bash
-pytest tests/
-```
-
-5. **Documentation**
-   - Update API documentation
-   - Add usage examples
-   - Update tutorials if needed
-
-## Tutorials
-
-### 1. Basic DNA Analysis
-
-```python
-from dnaflex.models.dna_llm import BioLLM
-from dnaflex.flexibility import FlexibilityAnalyzer
-
-# Initialize model
-model = BioLLM(model_type="dna")
-
-# Analyze sequence
-sequence = "ATGCTAGCTAGCT"
-result = model.analyze_dna(sequence)
-
-# Print results
-print(f"Sequence length: {result['length']}")
-print(f"GC content: {result['gc_content']:.2f}%")
-print("Base composition:", result['base_composition'])
-```
-
-### 2. Structure Analysis
-
-```python
-from dnaflex.parsers.parser import DnaParser
-from dnaflex.structure.structure import DnaStructure
-
-# Parse PDB file
-parser = DnaParser()
-structure = parser.parse_pdb("example.pdb")
-
-# Analyze structure
-for chain in structure.chains:
-    print(f"Chain {chain.chain_id}:")
-    print(f"Sequence: {chain.sequence}")
-    print(f"Length: {len(chain)}")
-```
-
-### 3. Custom Analysis Pipeline
-
-```python
-from dnaflex.models.features import FeatureExtractor
-from dnaflex.models.dynamics import MolecularDynamics
-
-class CustomAnalysis:
-    def __init__(self):
-        self.feature_extractor = FeatureExtractor()
-        self.dynamics = MolecularDynamics()
-    
-    def analyze(self, sequence):
-        # Extract features
-        features = self.feature_extractor.extract_features(sequence)
-        
-        # Run dynamics simulation
-        dynamics = self.dynamics.simulate(sequence)
-        
-        # Combine results
-        return {
-            'features': features,
-            'dynamics': dynamics
-        }
-```
-
-## Best Practices
+## Development Guidelines
 
 ### Code Style
 
-1. **Type Hints**
-```python
-from typing import Dict, List, Optional
+Follow PEP 8 with these additions:
+- Line length: 88 characters (Black formatter)
+- Use type hints
+- Document all public functions/methods
 
-def process_data(input_data: Dict[str, float],
-                threshold: Optional[float] = None) -> List[float]:
-    """Process input data with optional threshold."""
-```
-
-2. **Docstrings**
+Example:
 ```python
 def analyze_sequence(sequence: str) -> Dict[str, Any]:
-    """Analyze DNA sequence properties.
-    
+    """
+    Analyze DNA sequence properties.
+
     Args:
         sequence: Input DNA sequence
-        
+
     Returns:
         Dictionary containing analysis results
-        
-    Raises:
-        ValueError: If sequence contains invalid characters
     """
-```
-
-3. **Error Handling**
-```python
-def load_structure(file_path: str) -> DnaStructure:
-    try:
-        with open(file_path) as f:
-            # Processing
-            return structure
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Structure file not found: {file_path}")
-    except ValueError as e:
-        raise ValueError(f"Invalid structure format: {e}")
+    pass
 ```
 
 ### Testing
 
-1. **Unit Tests**
-```python
-def test_sequence_analysis():
-    sequence = "ATGC"
-    result = analyze_sequence(sequence)
-    assert result['length'] == 4
-    assert result['gc_content'] == 50.0
+#### Running Tests
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=dnaflex
+
+# Run specific test file
+pytest dnaflex/tests/test_integration.py
 ```
 
-2. **Integration Tests**
+#### Writing Tests
+
+Test files should follow this structure:
 ```python
-def test_full_pipeline():
-    # Test complete analysis pipeline
-    input_data = load_test_data()
-    result = run_pipeline(input_data)
-    validate_results(result)
+import pytest
+from dnaflex.models import analysis
+
+def test_sequence_analysis():
+    """Test basic sequence analysis."""
+    sequence = "ATGC"
+    result = analysis.analyze(sequence)
+    assert "gc_content" in result
+    assert result["gc_content"] == 50.0
+
+@pytest.mark.parametrize("sequence,expected", [
+    ("AAAA", 0.0),
+    ("GGCC", 100.0),
+])
+def test_gc_content(sequence, expected):
+    """Test GC content calculation."""
+    result = analysis.analyze(sequence)
+    assert result["gc_content"] == expected
 ```
+
+### Building C++ Extensions
+
+1. Configure CMake:
+```bash
+cd dnaflex/parsers/cpp
+mkdir build && cd build
+cmake ..
+```
+
+2. Build:
+```bash
+make
+```
+
+3. Install:
+```bash
+make install
+```
+
+### Documentation
+
+- Use Google-style docstrings
+- Keep API documentation up-to-date
+- Include examples in docstrings
 
 ### Performance Optimization
 
-1. **Caching**
-```python
-@lru_cache(maxsize=128)
-def expensive_computation(sequence: str) -> float:
-    # Complex computation
-    return result
-```
-
-2. **Vectorization**
-```python
-def process_coordinates(coords: np.ndarray) -> np.ndarray:
-    # Use NumPy operations instead of loops
-    distances = np.linalg.norm(coords[:, None] - coords, axis=2)
-    return distances
-```
-
-## Advanced Topics
-
-### Extending DNA-Flex
-
-1. **Adding New Analysis Methods**
-```python
-from dnaflex.models.analysis import BaseAnalyzer
-
-class CustomAnalyzer(BaseAnalyzer):
-    def analyze(self, sequence: str) -> Dict[str, Any]:
-        # Custom analysis implementation
-        return results
-```
-
-2. **Custom Data Providers**
-```python
-from dnaflex.data.providers import BaseProvider
-
-class CustomProvider(BaseProvider):
-    def fetch_data(self, identifier: str) -> Dict[str, Any]:
-        # Custom data fetching logic
-        return data
-```
-
-### Performance Profiling
-
-1. **Using cProfile**
+1. Profile code:
 ```python
 import cProfile
+import pstats
 
-def profile_analysis():
+def profile_function():
     profiler = cProfile.Profile()
     profiler.enable()
-    # Run analysis
+    # Your code here
     profiler.disable()
-    profiler.print_stats()
+    stats = pstats.Stats(profiler).sort_stats('cumulative')
+    stats.print_stats()
 ```
 
-2. **Memory Profiling**
-```python
-from memory_profiler import profile
+2. Use C++ for compute-intensive operations
+3. Leverage JAX for numerical computations
+4. Implement caching where appropriate
 
-@profile
-def memory_intensive_function():
-    # Function implementation
+### Error Handling
+
+Use custom exceptions:
+```python
+class DNAFlexError(Exception):
+    """Base exception for DNA-Flex."""
+    pass
+
+class SequenceError(DNAFlexError):
+    """Invalid sequence error."""
+    pass
+
+class StructureError(DNAFlexError):
+    """Structure-related error."""
+    pass
 ```
 
-## Troubleshooting
+### Contributing
 
-### Common Issues
+1. Fork the repository
+2. Create a feature branch
+3. Write tests
+4. Implement changes
+5. Run tests and linters
+6. Submit pull request
 
-1. **Import Errors**
-   - Check PYTHONPATH
-   - Verify installation
-   - Check dependencies
+#### Pull Request Checklist
 
-2. **Performance Issues**
-   - Use profiling tools
-   - Check memory usage
-   - Consider caching
+- [ ] Tests pass
+- [ ] Documentation updated
+- [ ] Code follows style guide
+- [ ] C++ components built and tested
+- [ ] Performance impact considered
 
-3. **Data Format Errors**
-   - Validate input formats
-   - Check file encodings
-   - Verify data integrity
+## Deployment
 
-### Debugging Tips
+### Production Setup
 
-1. **Using debugger**
+1. Use proper environment variables
+2. Configure logging
+3. Set up monitoring
+4. Use production-grade server
+
+Example production configuration:
 ```python
-import pdb
-
-def problematic_function():
-    pdb.set_trace()  # Breakpoint
-    # Function code
-```
-
-2. **Logging**
-```python
+import uvicorn
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('dna_flex.log'),
+        logging.StreamHandler()
+    ]
+)
 
-def complex_operation():
-    logger.debug("Starting operation")
-    # Operation code
-    logger.debug("Operation complete")
+if __name__ == "__main__":
+    uvicorn.run(
+        "app:app",
+        host="0.0.0.0",
+        port=8000,
+        workers=4,
+        log_level="info",
+        proxy_headers=True,
+        forwarded_allow_ips="*"
+    )
 ```
+
+### Docker Deployment
+
+1. Build image:
+```bash
+docker build -t dna-flex .
+```
+
+2. Run container:
+```bash
+docker run -d \
+    -p 8000:8000 \
+    -e DNA_FLEX_SECRET_KEY="your-secret" \
+    dna-flex
+```
+
+## Common Issues and Solutions
+
+### Installation Problems
+
+1. JAX installation fails:
+   - Ensure CUDA toolkit is installed for GPU support
+   - Try CPU-only installation: `pip install --upgrade "jax[cpu]"`
+
+2. C++ compilation fails:
+   - Check compiler version
+   - Ensure all dependencies are installed
+   - Check CMake configuration
+
+### Runtime Issues
+
+1. Memory usage:
+   - Use batch processing for large sequences
+   - Implement proper garbage collection
+   - Monitor memory usage
+
+2. Performance:
+   - Profile code
+   - Use C++ implementations
+   - Optimize database queries
+
+## Future Development
+
+### Planned Features
+
+1. WebSocket support
+2. Distributed computing
+3. Advanced visualization
+4. Additional analysis models
+
+### Architecture Evolution
+
+1. Microservices architecture
+2. GraphQL API
+3. Real-time analysis
+4. Cloud deployment
