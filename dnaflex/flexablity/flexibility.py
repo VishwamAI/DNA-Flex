@@ -1,177 +1,152 @@
-"""DNA flexibility analysis using C++ accelerated parsers."""
+"""DNA flexibility analysis and prediction module."""
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 import numpy as np
-from ..parsers.parsers_cpp import MSAProfile, MSAConverter
-from ..models.dna_llm import BioLLM
-from ..constants.atom_layouts import DNA_BASE_ATOMS
+from scipy.spatial.distance import pdist, squareform
 
-class DNAFlexibilityAnalyzer:
-    """Analyzes DNA sequence flexibility using ML models and physics-based calculations."""
+from dnaflex.structure.structure import DnaStructure, DnaChain, DnaResidue
+
+class FlexibilityAnalyzer:
+    """Analyzes DNA flexibility based on structure and sequence."""
     
-    def __init__(self, use_gpu: bool = False):
-        """Initialize the analyzer.
+    # Base stacking energy parameters (approximate values in kcal/mol)
+    STACKING_ENERGIES = {
+        ('A', 'A'): -5.37, ('A', 'T'): -6.57, ('A', 'C'): -5.27, ('A', 'G'): -6.78,
+        ('T', 'A'): -6.57, ('T', 'T'): -5.37, ('T', 'C'): -5.37, ('T', 'G'): -5.27,
+        ('C', 'A'): -5.27, ('C', 'T'): -5.37, ('C', 'C'): -5.37, ('C', 'G'): -8.26,
+        ('G', 'A'): -6.78, ('G', 'T'): -5.27, ('G', 'C'): -8.26, ('G', 'G'): -5.37
+    }
+    
+    # B-DNA parameters
+    BDNA_RISE = 3.4  # Å per base pair
+    BDNA_TWIST = 36.0  # degrees per base pair
+    
+    def __init__(self, structure: DnaStructure):
+        self.structure = structure
         
-        Args:
-            use_gpu: Whether to use GPU acceleration for ML model inference
-        """
-        self.msa_profile = MSAProfile()
-        self.msa_converter = MSAConverter()
-        self.model = BioLLM(
-            model_type="dna",
-            embedding_size=128,
-            hidden_size=256,
-            num_heads=4,
-            use_gpu=use_gpu
-        )
-        
-    def analyze_sequence(self, sequence: str) -> Dict[str, Union[np.ndarray, float]]:
-        """Analyze DNA sequence flexibility properties.
-        
-        Args:
-            sequence: DNA sequence string
-            
-        Returns:
-            Dictionary containing:
-            - bendability: Base-pair step bendability profile
-            - twist_flexibility: Base-pair step twist flexibility profile
-            - groove_width: Major and minor groove width estimates
-            - conservation: Position-wise conservation scores if multiple sequences
-            - stability: Base-pair step stability estimates
-        """
-        # Validate sequence
-        sequence = sequence.upper()
-        for base in sequence:
-            if base not in 'ATGC':
-                raise ValueError(f"Invalid base '{base}' in sequence")
-        
-        # Get structural predictions from ML model
-        embeddings = self.model.embed_sequence(sequence)
-        structure_features = self.model.predict_structure(embeddings)
-        
-        # Calculate flexibility metrics
-        metrics = {
-            'bendability': self._calc_bendability(sequence, structure_features),
-            'twist_flexibility': self._calc_twist_flexibility(sequence, structure_features),
-            'groove_width': self._calc_groove_geometry(sequence, structure_features),
-            'stability': self._calc_stability(sequence)
+    def calculate_base_step_parameters(self, chain: DnaChain) -> Dict[str, np.ndarray]:
+        """Calculate base step parameters (rise, roll, twist) between consecutive base pairs."""
+        parameters = {
+            'rise': [],
+            'roll': [],
+            'twist': []
         }
         
-        # Add conservation if we have multiple sequences
-        if self.msa_profile.get_sequence_count() > 1:
-            metrics['conservation'] = self.msa_profile.get_conservation_scores()
-        
-        return metrics
+        residues = sorted(chain._residues.items())
+        for i in range(len(residues) - 1):
+            curr_res = residues[i][1]
+            next_res = residues[i+1][1]
+            
+            # Calculate rise using C1' atoms
+            if "C1'" in curr_res.atoms and "C1'" in next_res.atoms:
+                c1_curr = np.array([curr_res.atoms["C1'"].x, 
+                                  curr_res.atoms["C1'"].y,
+                                  curr_res.atoms["C1'"].z])
+                c1_next = np.array([next_res.atoms["C1'"].x,
+                                  next_res.atoms["C1'"].y,
+                                  next_res.atoms["C1'"].z])
+                rise = np.linalg.norm(c1_next - c1_curr)
+                parameters['rise'].append(rise)
+                
+                # Calculate approximate roll and twist using backbone atoms
+                if all(atom in curr_res.atoms and atom in next_res.atoms 
+                      for atom in ["P", "O3'", "C3'"]):
+                    curr_plane = self._calculate_base_plane(curr_res)
+                    next_plane = self._calculate_base_plane(next_res)
+                    
+                    if curr_plane is not None and next_plane is not None:
+                        roll = self._calculate_angle(curr_plane[1], next_plane[1])
+                        twist = self._calculate_angle(curr_plane[0], next_plane[0])
+                        
+                        parameters['roll'].append(roll)
+                        parameters['twist'].append(twist)
+                    
+        return {k: np.array(v) for k, v in parameters.items()}
     
-    def add_homologous_sequence(self, sequence: str) -> None:
-        """Add a homologous sequence for conservation analysis.
+    def predict_flexibility(self, chain: DnaChain) -> np.ndarray:
+        """Predict flexibility scores for each base in the chain."""
+        sequence = chain.sequence
+        flexibility_scores = np.zeros(len(sequence))
         
-        Args:
-            sequence: DNA sequence string
-        """
-        self.msa_profile.add_sequence(sequence)
-        self.msa_profile.compute_profile()
+        # Calculate base stacking contributions
+        for i in range(len(sequence)-1):
+            curr_base = sequence[i]
+            next_base = sequence[i+1]
+            pair = (curr_base, next_base)
+            
+            # Get stacking energy
+            energy = self.STACKING_ENERGIES.get(pair, -5.0)  # default if unknown
+            
+            # Convert energy to flexibility score (higher energy = less flexible)
+            # Normalize to 0-1 range where 1 is most flexible
+            flex_score = 1.0 - (abs(energy) / 10.0)  # 10.0 is approximate max energy
+            
+            # Influence both current and next base
+            flexibility_scores[i] += flex_score * 0.7
+            flexibility_scores[i+1] += flex_score * 0.3
+            
+        # Adjust for sequence-dependent effects
+        for i in range(len(sequence)):
+            # AT-rich regions are generally more flexible
+            if sequence[i] in 'AT':
+                flexibility_scores[i] *= 1.2
+                
+        # Normalize final scores
+        flexibility_scores = np.clip(flexibility_scores, 0, 1)
+        
+        return flexibility_scores
     
-    def _calc_bendability(self, sequence: str, features: Dict) -> np.ndarray:
-        """Calculate DNA bendability profile."""
-        # Consider both sequence-dependent parameters and structural predictions
-        steps = len(sequence) - 1
-        bendability = np.zeros(steps)
-        
-        for i in range(steps):
-            # Get dinucleotide and its structural features
-            dinuc = sequence[i:i+2]
-            struct_contrib = features['bendability'][i]
+    def _calculate_base_plane(self, residue: DnaResidue) -> Optional[Tuple[np.ndarray, np.ndarray]]:
+        """Calculate base plane normal vector and reference vector for a residue."""
+        if all(atom in residue.atoms for atom in ["C1'", "N1", "C4"]):
+            c1 = np.array([residue.atoms["C1'"].x, residue.atoms["C1'"].y, residue.atoms["C1'"].z])
+            n1 = np.array([residue.atoms["N1"].x, residue.atoms["N1"].y, residue.atoms["N1"].z])
+            c4 = np.array([residue.atoms["C4"].x, residue.atoms["C4"].y, residue.atoms["C4"].z])
             
-            # Combine sequence and structure contributions
-            bendability[i] = self._get_sequence_bendability(dinuc) * struct_contrib
+            # Calculate vectors defining base plane
+            v1 = n1 - c1
+            v2 = c4 - c1
             
-        return bendability
-    
-    def _calc_twist_flexibility(self, sequence: str, features: Dict) -> np.ndarray:
-        """Calculate DNA twist flexibility profile."""
-        steps = len(sequence) - 1
-        flexibility = np.zeros(steps)
-        
-        for i in range(steps):
-            dinuc = sequence[i:i+2]
-            struct_contrib = features['twist_flexibility'][i]
-            flexibility[i] = self._get_sequence_twist_flex(dinuc) * struct_contrib
+            # Normal vector to base plane
+            normal = np.cross(v1, v2)
+            normal = normal / np.linalg.norm(normal)
             
-        return flexibility
-    
-    def _calc_groove_geometry(self, sequence: str, features: Dict) -> Dict[str, np.ndarray]:
-        """Calculate major and minor groove geometries."""
-        # Need 3 base pairs to define groove geometry
-        n_windows = len(sequence) - 2
-        major_groove = np.zeros(n_windows)
-        minor_groove = np.zeros(n_windows)
-        
-        for i in range(n_windows):
-            trinuc = sequence[i:i+3]
-            struct_features = features['groove_geometry'][i]
+            # Reference vector for measuring twist
+            ref = v1 / np.linalg.norm(v1)
             
-            major_groove[i] = self._get_major_groove_width(trinuc) * struct_features['major']
-            minor_groove[i] = self._get_minor_groove_width(trinuc) * struct_features['minor']
+            return ref, normal
             
-        return {
-            'major_groove': major_groove,
-            'minor_groove': minor_groove
-        }
-    
-    def _calc_stability(self, sequence: str) -> np.ndarray:
-        """Calculate base-pair step stability."""
-        steps = len(sequence) - 1
-        stability = np.zeros(steps)
-        
-        # Define stacking energy parameters (kcal/mol)
-        stacking_energies = {
-            'AA': -5.37, 'AT': -6.57, 'AG': -5.27, 'AC': -5.27,
-            'TA': -6.57, 'TT': -5.37, 'TG': -5.27, 'TC': -5.27,
-            'GA': -5.27, 'GT': -5.27, 'GG': -5.37, 'GC': -8.26,
-            'CA': -5.27, 'CT': -5.27, 'CG': -8.26, 'CC': -5.37
-        }
-        
-        for i in range(steps):
-            dinuc = sequence[i:i+2]
-            stability[i] = -stacking_energies.get(dinuc, 0)  # Negative because higher energy = less stable
-            
-        return stability
+        return None
     
     @staticmethod
-    def _get_sequence_bendability(dinuc: str) -> float:
-        """Get sequence-dependent bendability parameter."""
-        # Parameters from experimental studies
-        bendability = {
-            'AA': 1.2, 'AT': 1.0, 'AG': 0.9, 'AC': 0.8,
-            'TA': 1.3, 'TT': 1.2, 'TG': 0.8, 'TC': 0.7,
-            'GA': 0.9, 'GT': 0.8, 'GG': 1.1, 'GC': 0.6,
-            'CA': 0.8, 'CT': 0.7, 'CG': 0.6, 'CC': 1.1
-        }
-        return bendability.get(dinuc, 1.0)
-    
-    @staticmethod
-    def _get_sequence_twist_flex(dinuc: str) -> float:
-        """Get sequence-dependent twist flexibility parameter."""
-        # Parameters derived from MD simulations
-        twist_flex = {
-            'AA': 1.1, 'AT': 1.2, 'AG': 0.9, 'AC': 0.8,
-            'TA': 1.3, 'TT': 1.1, 'TG': 0.8, 'TC': 0.7,
-            'GA': 0.9, 'GT': 0.8, 'GG': 1.0, 'GC': 0.7,
-            'CA': 0.8, 'CT': 0.7, 'CG': 0.7, 'CC': 1.0
-        }
-        return twist_flex.get(dinuc, 1.0)
-    
-    @staticmethod
-    def _get_major_groove_width(trinuc: str) -> float:
-        """Estimate sequence-dependent major groove width."""
-        # GC content affects major groove width
-        gc_count = trinuc.count('G') + trinuc.count('C')
-        return 1.0 + 0.1 * gc_count  # Base width + GC contribution
-    
-    @staticmethod
-    def _get_minor_groove_width(trinuc: str) -> float:
-        """Estimate sequence-dependent minor groove width."""
-        # AT content affects minor groove width
-        at_count = trinuc.count('A') + trinuc.count('T')
-        return 1.0 + 0.1 * at_count  # Base width + AT contribution
+    def _calculate_angle(v1: np.ndarray, v2: np.ndarray) -> float:
+        """Calculate angle between two vectors in degrees."""
+        cos_angle = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+        cos_angle = np.clip(cos_angle, -1.0, 1.0)  # Avoid numerical errors
+        return np.degrees(np.arccos(cos_angle))
+        
+    def identify_flexible_regions(self, chain: DnaChain, 
+                                window_size: int = 4,
+                                threshold: float = 0.6) -> List[Tuple[int, int]]:
+        """Identify continuous regions of high flexibility."""
+        flexibility = self.predict_flexibility(chain)
+        
+        # Use sliding window to find regions of sustained flexibility
+        flexible_regions = []
+        start_idx = None
+        
+        for i in range(len(flexibility) - window_size + 1):
+            window_avg = np.mean(flexibility[i:i+window_size])
+            
+            if window_avg > threshold:
+                if start_idx is None:
+                    start_idx = i
+            elif start_idx is not None:
+                flexible_regions.append((start_idx, i))
+                start_idx = None
+                
+        # Handle case where flexible region extends to end
+        if start_idx is not None:
+            flexible_regions.append((start_idx, len(flexibility)))
+            
+        return flexible_regions
