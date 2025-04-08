@@ -10,12 +10,12 @@ from app import app
 @pytest.fixture
 def client():
     """Create test client."""
-    return TestClient(app)
+    with TestClient(app) as test_client:
+        yield test_client
 
 @pytest.fixture
-def auth_headers():
+def auth_headers(client):
     """Get authentication headers."""
-    client = TestClient(app)
     response = client.post("/token", data={"username": "testuser", "password": "testpass"})
     assert response.status_code == 200
     token = response.json()["access_token"]

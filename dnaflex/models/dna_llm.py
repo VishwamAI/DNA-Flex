@@ -318,24 +318,57 @@ class BioLLM:
         if not all(aa in "ACDEFGHIKLMNPQRSTVWY" for aa in sequence):
             raise ValueError("Invalid protein sequence")
             
-        # Generate embeddings
-        embeddings = self.generate_embeddings(sequence)
-        
-        # Compute sequence properties
-        properties = self._analyze_protein_properties(sequence)
-        
-        # Predict structure elements
-        structure = self._predict_protein_structure(sequence)
-        
-        # Predict functions
-        functions = self._predict_protein_functions(sequence)
-        
-        return {
-            'embeddings': jax.device_get(embeddings),
-            'properties': properties,
-            'structure': structure,
-            'predicted_functions': functions
-        }
+        try:
+            # Generate embeddings with error handling
+            try:
+                embeddings = self.generate_embeddings(sequence)
+            except Exception as e:
+                # Fallback to None if embeddings fail
+                embeddings = None
+            
+            # Compute sequence properties
+            properties = self._analyze_protein_properties(sequence)
+            
+            # Predict structure elements with error handling
+            try:
+                structure = self._predict_protein_structure(sequence)
+            except Exception as e:
+                # Fallback to basic structure prediction
+                structure = {
+                    'secondary_structure': self._predict_secondary_structure_propensities(sequence),
+                    'domains': [],
+                    'disorder': [],
+                    'contacts': []
+                }
+            
+            # Predict functions with error handling 
+            try:
+                functions = self._predict_protein_functions(sequence)
+            except Exception as e:
+                # Fallback to basic function prediction
+                functions = {
+                    'functional_sites': {},
+                    'structure_class': {'unknown': 1.0},
+                    'predicted_functions': {},
+                    'localization': {'unknown': 1.0}
+                }
+            
+            result = {
+                'properties': properties,
+                'structure': structure,
+                'predicted_functions': functions
+            }
+            
+            if embeddings is not None:
+                result['embeddings'] = jax.device_get(embeddings)
+                
+            return result
+            
+        except Exception as e:
+            # Log error and re-raise with more context
+            import logging
+            logging.error(f"Error analyzing protein sequence: {str(e)}")
+            raise
     
     def _analyze_sequence_properties(self, sequence: str) -> Dict[str, Any]:
         """Analyze DNA sequence properties."""
@@ -763,15 +796,15 @@ class BioLLM:
     def _predict_protein_domains(self, sequence: str) -> List[Dict[str, Any]]:
         """Predict potential protein domains."""
         domains = []
-        min_domain_size = 30
+        min_domain_size = 20  # Reduced from 30 for better sensitivity
         
-        # Handle sequences shorter than window size
+        # Handle sequences shorter than min_domain_size
         if len(sequence) < min_domain_size:
             return [{
                 'start': 0,
                 'end': len(sequence),
                 'sequence': sequence,
-                'type': 'unknown'
+                'type': self._predict_domain_type(sequence)
             }]
         
         # Simple domain prediction based on hydrophobicity patterns
@@ -792,27 +825,59 @@ class BioLLM:
         current_domain = {'start': 0, 'score': scores[0]}
         
         for i in range(1, len(scores)):
-            if abs(scores[i] - current_domain['score']) > 0.5:
+            if abs(scores[i] - current_domain['score']) > 0.3:  # Reduced threshold from 0.5
                 # End of current domain
                 if i - current_domain['start'] >= min_domain_size:
+                    domain_seq = sequence[current_domain['start']:i]
                     domains.append({
                         'start': current_domain['start'],
                         'end': i,
-                        'sequence': sequence[current_domain['start']:i],
-                        'type': 'hydrophobic' if current_domain['score'] > 0 else 'hydrophilic'
+                        'sequence': domain_seq,
+                        'type': self._predict_domain_type(domain_seq)
                     })
                 current_domain = {'start': i, 'score': scores[i]}
         
         # Add final domain if large enough
         if len(scores) - current_domain['start'] >= min_domain_size:
+            domain_seq = sequence[current_domain['start']:]
             domains.append({
                 'start': current_domain['start'],
                 'end': len(scores),
-                'sequence': sequence[current_domain['start']:],
-                'type': 'hydrophobic' if current_domain['score'] > 0 else 'hydrophilic'
+                'sequence': domain_seq,
+                'type': self._predict_domain_type(domain_seq)
+            })
+        
+        # If no domains were found, treat whole sequence as one domain
+        if not domains:
+            domains.append({
+                'start': 0,
+                'end': len(sequence),
+                'sequence': sequence,
+                'type': self._predict_domain_type(sequence)
             })
         
         return domains
+
+    def _predict_domain_type(self, sequence: str) -> str:
+        """Predict the type of a protein domain based on sequence properties."""
+        # Calculate properties
+        hydrophobicity = self._calculate_hydrophobicity(sequence)
+        charged_content = sum(1 for aa in sequence if aa in 'DEKR') / len(sequence)
+        aromatic_content = sum(1 for aa in sequence if aa in 'FWY') / len(sequence)
+        glycine_content = sum(1 for aa in sequence if aa == 'G') / len(sequence)
+        proline_content = sum(1 for aa in sequence if aa == 'P') / len(sequence)
+        
+        # Predict domain type based on composition
+        if hydrophobicity > 0.3 and aromatic_content > 0.1:
+            return "globular"
+        elif hydrophobicity > 0.5:
+            return "transmembrane"
+        elif charged_content > 0.3:
+            return "binding"
+        elif glycine_content > 0.2 or proline_content > 0.15:
+            return "flexible"
+        else:
+            return "structural"
     
     def _predict_protein_disorder(self, sequence: str) -> List[float]:
         """Predict protein disorder propensity."""

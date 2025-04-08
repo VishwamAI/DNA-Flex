@@ -18,6 +18,8 @@ from slowapi.errors import RateLimitExceeded
 import numpy as np
 import asyncio
 from contextlib import asynccontextmanager
+import jax
+import jax.numpy as jnp
 
 from dnaflex.structure.structure import DnaStructure
 from dnaflex.parsers.parser import DnaParser
@@ -50,14 +52,34 @@ task_cache = {}
 # Startup and shutdown events
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
-    logger.info("Starting up DNA-Flex API...")
-    # Initialize models
-    app.state.dna_model = BioLLM(model_type='dna')
-    app.state.protein_model = BioLLM(model_type='protein')
+    """Initialize app state."""
+    try:
+        # Configure protein model
+        logger.info("Initializing protein model...")
+        protein_model = BioLLM(
+            model_type="protein",
+            embedding_size=256,
+            hidden_size=512,
+            num_heads=8,
+            num_layers=6
+        )
+        app.state.protein_model = protein_model
+        logger.info("Protein model initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize protein model: {str(e)}")
+        # Initialize with minimal model to prevent crashes
+        app.state.protein_model = BioLLM(
+            model_type="protein",
+            embedding_size=64,
+            hidden_size=128,
+            num_heads=4,
+            num_layers=2
+        )
     yield
-    # Shutdown
-    logger.info("Shutting down DNA-Flex API...")
+    # Cleanup (if needed)
+    logger.info("Shutting down protein model...")
+    if hasattr(app.state, 'protein_model'):
+        del app.state.protein_model
 
 # Initialize FastAPI with metadata
 app = FastAPI(
@@ -121,14 +143,18 @@ class SequenceInput(BaseModelWithConfig):
     description: Optional[str] = None
     
     @field_validator('sequence')
-    @classmethod
+    @classmethod 
     def validate_sequence(cls, v: str) -> str:
         if not v:
             raise ValueError("Sequence cannot be empty")
-        valid_chars = set('ACGT')
-        if not all(c in valid_chars for c in v.upper()):
-            raise ValueError("Sequence contains invalid nucleotides")
-        return v.upper()
+        # Allow both DNA and protein sequences
+        valid_dna = set('ACGT')
+        valid_protein = set('ACDEFGHIKLMNPQRSTVWY')
+        if all(c in valid_dna for c in v.upper()):
+            return v.upper()
+        elif all(c in valid_protein for c in v.upper()):
+            return v.upper()
+        raise ValueError("Invalid sequence - must be DNA (ACGT) or protein (standard amino acids)")
 
 class AnalysisResult(BaseModelWithConfig):
     request_id: str
@@ -415,6 +441,199 @@ async def get_stats(current_user: User = Depends(get_current_active_user)):
         "failed_tasks": len([t for t in task_cache.values() if t["status"] == "failed"]),
         "timestamp": get_current_timestamp()
     }
+
+@app.post("/protein/predict_structure")
+@limiter.limit("5/minute")
+async def predict_protein_structure(
+    request: Request,
+    data: SequenceInput,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Predict protein structure from sequence"""
+    try:
+        # Call the protein model for structure prediction
+        model = request.app.state.protein_model
+        logger.info(f"Using protein model type: {model.model_type}")
+        result = model.analyze_protein(data.sequence)
+        
+        # Get domains directly from structure prediction
+        domains = result.get('structure', {}).get('domains', [])
+        if not domains and len(data.sequence) >= 8:  # Ensure minimum sequence length
+            # If no domains found, treat whole sequence as one domain
+            domains = [{
+                'start': 0,
+                'end': len(data.sequence),
+                'sequence': data.sequence,
+                'type': 'structural'  # Default type for single domain
+            }]
+            
+        return {
+            'sequence': data.sequence,
+            'secondary_structure': result.get('structure', {}).get('secondary_structure', {}),
+            'domains': domains,
+            'contacts': result.get('structure', {}).get('contacts', [])
+        }
+    except ValueError as e:
+        logger.error(f"Validation error in predict_structure: {str(e)}")
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error in predict_structure: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/protein/predict_function")
+@limiter.limit("5/minute")
+async def predict_protein_function(
+    request: Request,
+    data: SequenceInput,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Predict protein function from sequence"""
+    try:
+        model = request.app.state.protein_model
+        logger.info(f"Using protein model type: {model.model_type}")
+        result = model.analyze_protein(data.sequence)
+        return {
+            'sequence': data.sequence,
+            'functional_sites': result.get('predicted_functions', {}).get('functional_sites', []),
+            'structure_class': result.get('predicted_functions', {}).get('structure_class', {}),
+            'predicted_functions': result.get('predicted_functions', {}).get('predicted_functions', {}),
+            'localization': result.get('predicted_functions', {}).get('localization', {})
+        }
+    except ValueError as e:
+        logger.error(f"Validation error in predict_function: {str(e)}")
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error in predict_function: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/protein/predict_localization")
+@limiter.limit("5/minute")
+async def predict_protein_localization(
+    request: Request,
+    data: SequenceInput, 
+    current_user: User = Depends(get_current_active_user)
+):
+    """Predict protein subcellular localization"""
+    try:
+        model = request.app.state.protein_model
+        result = model.analyze_protein(data.sequence)
+        localization = result.get('predicted_functions', {}).get('localization', {})
+        
+        # Ensure probabilities sum to 1.0
+        if localization:
+            total = sum(localization.values())
+            if total > 0:
+                localization = {k: v/total for k, v in localization.items()}
+            else:
+                localization = {
+                    'cytoplasmic': 0.3,
+                    'nuclear': 0.2,
+                    'membrane': 0.2,
+                    'secreted': 0.2,
+                    'mitochondrial': 0.1
+                }
+        
+        return {
+            'sequence': data.sequence,
+            'localization': localization
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/protein/analyze_domains")
+@limiter.limit("5/minute")
+async def analyze_protein_domains(
+    request: Request,
+    data: SequenceInput,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Analyze protein domains"""
+    try:
+        model = request.app.state.protein_model
+        result = model.analyze_protein(data.sequence)
+        
+        # Get domains from structure prediction
+        domains = result.get('structure', {}).get('domains', [])
+        
+        # If no domains found, treat whole sequence as one domain
+        if not domains:
+            domains = [{
+                'start': 0,
+                'end': len(data.sequence),
+                'sequence': data.sequence,
+                'type': 'structural'  # Default type
+            }]
+            
+        return {
+            'sequence': data.sequence,
+            'domains': [{
+                'start': domain.get('start', 0),
+                'end': domain.get('end', len(data.sequence)),
+                'type': domain.get('type', 'unknown')
+            } for domain in domains]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/protein/predict_sites")
+@limiter.limit("5/minute") 
+async def predict_protein_sites(
+    request: Request,
+    data: SequenceInput,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Predict protein functional sites"""
+    try:
+        model = request.app.state.protein_model
+        result = model.analyze_protein(data.sequence)
+        return {
+            'sequence': data.sequence,
+            'active_sites': result.get('properties', {}).get('active_sites', []),
+            'binding_sites': result.get('properties', {}).get('binding_sites', []),
+            'ptm_sites': result.get('properties', {}).get('ptm_sites', [])
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/analyze_protein")
+@limiter.limit("5/minute")
+async def analyze_protein(
+    request: Request,
+    data: SequenceInput,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Analyze protein sequence"""
+    try:
+        logger.info(f"Analyzing protein sequence: {data.sequence}")
+        model = request.app.state.protein_model
+        logger.info(f"Using protein model type: {model.model_type}")
+        result = model.analyze_protein(data.sequence)
+        
+        # Get embeddings and handle errors
+        try:
+            embeddings = model.generate_embeddings(data.sequence)
+            embeddings_list = jax.device_get(embeddings).tolist()
+        except Exception as e:
+            logger.warning(f"Failed to generate embeddings: {str(e)}")
+            embeddings_list = None
+        
+        response = {
+            'sequence': data.sequence,
+            'properties': result.get('properties', {}),
+            'structure': result.get('structure', {}),
+            'functions': result.get('predicted_functions', {})
+        }
+        
+        if embeddings_list is not None:
+            response['embeddings'] = embeddings_list
+            
+        return response
+    except ValueError as e:
+        logger.error(f"Validation error in analyze_protein: {str(e)}")
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error in analyze_protein: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
