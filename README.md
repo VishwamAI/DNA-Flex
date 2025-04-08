@@ -141,7 +141,7 @@ If you use DNA-Flex in your research, please cite:
 ```bibtex
 @software{dna_flex_2025,
   title = {DNA-Flex: DNA Sequence Analysis and Structure Prediction},
-  author = {Your Name},
+  author = {kasinadhsarma},
   year = {2025},
   url = {https://github.com/yourusername/DNA-Flex}
 }
