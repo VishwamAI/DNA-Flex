@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D DNA Helix Viewer (Interactive)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        /* Basic styling for the body and canvas container */
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+        #container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* Needed for absolute positioning */
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 0.5rem;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* Style for the main control panel */
+        #controls-panel {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.75rem;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            max-width: 250px;
+        }
+        #controls-panel button {
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 0.8rem;
+            min-width: 80px;
+            text-align: center;
+        }
+        #controls-panel button:hover {
+            background-color: #2d3748;
+        }
+        #controls-panel button:disabled {
+            background-color: #718096; /* Lighter gray when disabled */
+            cursor: not-allowed;
+        }
+        .control-group {
+             display: flex;
+             align-items: center;
+             gap: 0.5rem;
+        }
+        .speed-controls span:first-child {
+             width: 50px;
+             text-align: left;
+        }
+         .speed-controls span#speed-display {
+             min-width: 50px;
+             text-align: center;
+             background-color: rgba(255, 255, 255, 0.1);
+             padding: 0.1rem 0.3rem;
+             border-radius: 0.25rem;
+        }
+        #composition-info {
+            margin-top: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 0.75rem;
+        }
+        #composition-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        #composition-info ul {
+            list-style: none; padding: 0; margin: 0; font-size: 0.8rem;
+        }
+        #composition-info li {
+            display: flex; justify-content: space-between; padding: 0.15rem 0;
+        }
+         #composition-info li span:last-child {
+             font-weight: 500; min-width: 40px; text-align: right;
+         }
+        /* Style for the click information display */
+        #click-info {
+            position: absolute;
+            display: none; /* Hidden by default */
+            padding: 0.5rem 0.75rem;
+            background-color: rgba(60, 60, 60, 0.85); /* Darker, more opaque background */
+            color: white;
+            border-radius: 0.375rem; /* Slightly smaller radius */
+            font-size: 0.8rem;
+            z-index: 20; /* Above controls panel */
+            pointer-events: none; /* Prevent it from interfering with clicks */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="container">
+        <div id="controls-panel">
+            <div class="control-group">
+                <button id="toggle-rotation-btn">Toggle Rotation</button>
+                <span id="rotation-status" class="ml-2 font-medium">ON</span>
+            </div>
+            <div class="control-group speed-controls">
+                <span>Speed:</span>
+                <button id="decrease-speed-btn">-</button>
+                <span id="speed-display">1.00x</span>
+                <button id="increase-speed-btn">+</button>
+            </div>
+            <div id="composition-info">
+                <h4>DNA Composition (Approx. % by Mass)</h4>
+                <ul>
+                    <li><span>Oxygen (O)</span> <span>~33%</span></li>
+                    <li><span>Carbon (C)</span> <span>~33%</span></li>
+                    <li><span>Nitrogen (N)</span> <span>~16%</span></li>
+                    <li><span>Phosphorus (P)</span> <span>~9%</span></li>
+                    <li><span>Hydrogen (H)</span> <span>~4%</span></li>
+                </ul>
+            </div>
+        </div>
+        <div id="click-info">Component Info</div>
+        </div>
+
+    <script>
+        // --- Global Variables ---
+        let scene, camera, renderer, controls;
+        let container, dnaGroup;
+        let isAutoRotating = true;
+        let rotationSpeed = 0.005;
+        const baseRotationSpeed = 0.005;
+        let rotationStatusElement, speedDisplayElement;
+        let raycaster, mouse; // For click detection
+        let clickInfoElement; // For displaying info on click
+
+        // --- Initialization ---
+        function init() {
+            // Get DOM elements
+            container = document.getElementById('container');
+            rotationStatusElement = document.getElementById('rotation-status');
+            speedDisplayElement = document.getElementById('speed-display');
+            clickInfoElement = document.getElementById('click-info'); // Get the info display element
+            const toggleRotationBtn = document.getElementById('toggle-rotation-btn');
+            const decreaseSpeedBtn = document.getElementById('decrease-speed-btn');
+            const increaseSpeedBtn = document.getElementById('increase-speed-btn');
+
+            // 1. Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xffffff);
+
+            // 2. Camera
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.z = 30;
+            camera.position.y = 5;
+
+            // 3. Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // 4. Controls (OrbitControls)
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 5;
+            controls.maxDistance = 100;
+            controls.target.set(0, 5, 0);
+
+            // 5. Lighting
+            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.6);
+            scene.add(ambientLight);
+            const pointLight = new THREE.PointLight(0xffffff, 0.9);
+            pointLight.position.set(20, 30, 40);
+            scene.add(pointLight);
+            const pointLight2 = new THREE.PointLight(0xffffff, 0.5);
+            pointLight2.position.set(-20, -10, -30);
+            scene.add(pointLight2);
+
+            // 6. Create DNA Helix Structure
+            dnaGroup = new THREE.Group(); // Group to hold all DNA parts
+            createDNAHelix(dnaGroup);
+            scene.add(dnaGroup);
+
+            // 7. Initialize Raycaster and Mouse Vector
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            // 8. Add Event Listeners
+            toggleRotationBtn.addEventListener('click', toggleRotation);
+            decreaseSpeedBtn.addEventListener('click', decreaseSpeed);
+            increaseSpeedBtn.addEventListener('click', increaseSpeed);
+            window.addEventListener('resize', onWindowResize, false);
+            renderer.domElement.addEventListener('click', onCanvasClick, false); // Add click listener to canvas
+
+            // Initial UI Update
+            updateRotationUI();
+
+            // Start the animation loop
+            animate();
+        }
+
+        // --- Create DNA Helix ---
+        function createDNAHelix(group) {
+            const pointsPerTurn = 10;
+            const helixRadius = 5;
+            const verticalSeparation = 2;
+            const totalTurns = 3;
+            const totalPoints = pointsPerTurn * totalTurns;
+            const angleIncrement = (Math.PI * 2) / pointsPerTurn;
+
+            // Materials
+            const backboneMaterial1 = new THREE.MeshPhongMaterial({ color: 0x0077ff, shininess: 60 }); // Blue strand
+            const backboneMaterial2 = new THREE.MeshPhongMaterial({ color: 0xff7700, shininess: 60 }); // Orange strand
+            const basePairMaterial = new THREE.MeshPhongMaterial({ color: 0xcccccc, emissive: 0x111111, shininess: 30 }); // Gray for base pairs
+
+            // Geometry
+            const sphereGeometry = new THREE.SphereGeometry(0.4, 16, 16);
+
+            let previousPoint1 = null;
+            let previousPoint2 = null;
+
+            for (let i = 0; i <= totalPoints; i++) {
+                const angle = i * angleIncrement;
+                const y = i * verticalSeparation - (totalPoints * verticalSeparation / 2);
+
+                // --- Strand 1 ---
+                const x1 = helixRadius * Math.cos(angle);
+                const z1 = helixRadius * Math.sin(angle);
+                const point1 = new THREE.Vector3(x1, y, z1);
+                const backboneSphere1 = new THREE.Mesh(sphereGeometry, backboneMaterial1);
+                backboneSphere1.position.copy(point1);
+                backboneSphere1.userData = { type: 'Phosphate-Sugar Backbone (Blue)' }; // Add user data
+                group.add(backboneSphere1);
+
+                // --- Strand 2 ---
+                const x2 = helixRadius * Math.cos(angle + Math.PI);
+                const z2 = helixRadius * Math.sin(angle + Math.PI);
+                const point2 = new THREE.Vector3(x2, y, z2);
+                const backboneSphere2 = new THREE.Mesh(sphereGeometry, backboneMaterial2);
+                backboneSphere2.position.copy(point2);
+                backboneSphere2.userData = { type: 'Phosphate-Sugar Backbone (Orange)' }; // Add user data
+                group.add(backboneSphere2);
+
+                // --- Create Base Pair Bond ---
+                // Pass user data type to createBond
+                createBond(point1, point2, basePairMaterial, group, 0.15, 'Base Pair Connection');
+
+                // --- Create Backbone Bonds ---
+                if (previousPoint1) {
+                    createBond(previousPoint1, point1, backboneMaterial1, group, 0.2, 'Phosphate-Sugar Backbone (Blue)');
+                }
+                 if (previousPoint2) {
+                    createBond(previousPoint2, point2, backboneMaterial2, group, 0.2, 'Phosphate-Sugar Backbone (Orange)');
+                }
+
+                previousPoint1 = point1;
+                previousPoint2 = point2;
+            }
+        }
+
+        // --- Helper function to create a bond (cylinder) ---
+        // Added dataType parameter to store in userData
+        function createBond(point1, point2, material, group, radius = 0.15, dataType = 'Unknown Bond') {
+            const direction = new THREE.Vector3().subVectors(point2, point1);
+            const distance = direction.length();
+
+            if (distance < 0.01) return;
+
+            const bondGeometry = new THREE.CylinderGeometry(radius, radius, distance, 8, 1, false);
+            const bond = new THREE.Mesh(bondGeometry, material);
+
+            bond.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
+            bond.position.copy(point1).add(direction.multiplyScalar(0.5));
+            bond.userData = { type: dataType }; // Add user data to the bond
+            group.add(bond);
+        }
+
+        // --- Handle Canvas Click ---
+        function onCanvasClick(event) {
+            // Calculate mouse position in normalized device coordinates (-1 to +1)
+            mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+            mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+            // Update the picking ray with the camera and mouse position
+            raycaster.setFromCamera(mouse, camera);
+
+            // Calculate objects intersecting the picking ray
+            // We only check intersections with children of dnaGroup
+            const intersects = raycaster.intersectObjects(dnaGroup.children, true); // true for recursive check
+
+            if (intersects.length > 0) {
+                // Find the first intersected object that has our custom userData
+                const firstIntersected = intersects.find(intersect => intersect.object.userData && intersect.object.userData.type);
+
+                if (firstIntersected) {
+                    const objectType = firstIntersected.object.userData.type;
+                    clickInfoElement.textContent = objectType; // Update the info text
+                    clickInfoElement.style.display = 'block'; // Make it visible
+
+                    // Position the info box near the mouse click
+                    // Add small offsets to prevent the cursor from blocking the text
+                    const offsetX = 15;
+                    const offsetY = -15;
+                    clickInfoElement.style.left = `${event.clientX + offsetX}px`;
+                    clickInfoElement.style.top = `${event.clientY + offsetY}px`;
+
+                } else {
+                     // Clicked on something without userData (shouldn't happen if setup correctly)
+                     clickInfoElement.style.display = 'none'; // Hide if no relevant object found
+                }
+
+            } else {
+                // Clicked on the background (no intersections)
+                clickInfoElement.style.display = 'none'; // Hide the info box
+            }
+        }
+
+
+        // --- Control Functions ---
+        function toggleRotation() {
+            isAutoRotating = !isAutoRotating;
+            updateRotationUI();
+        }
+
+        function increaseSpeed() {
+            rotationSpeed += baseRotationSpeed * 0.25;
+            updateRotationUI();
+        }
+
+        function decreaseSpeed() {
+            rotationSpeed -= baseRotationSpeed * 0.25;
+            if (rotationSpeed < 0) rotationSpeed = 0;
+            updateRotationUI();
+        }
+
+        // --- Update Rotation UI ---
+        function updateRotationUI() {
+            if (rotationStatusElement) {
+                rotationStatusElement.textContent = isAutoRotating ? 'ON' : 'OFF';
+            }
+            if (speedDisplayElement) {
+                const speedMultiplier = baseRotationSpeed !== 0 ? (rotationSpeed / baseRotationSpeed).toFixed(2) : (0).toFixed(2);
+                speedDisplayElement.textContent = `${speedMultiplier}x`;
+            }
+            const speedControls = document.querySelector('.speed-controls');
+             if (speedControls) {
+                speedControls.style.opacity = isAutoRotating ? '1' : '0.5';
+                const buttons = speedControls.querySelectorAll('button');
+                buttons.forEach(button => button.disabled = !isAutoRotating);
+             }
+        }
+
+        // --- Handle Window Resize ---
+        function onWindowResize() {
+            if (container && camera && renderer) {
+                 const width = container.clientWidth;
+                 const height = container.clientHeight;
+                 camera.aspect = width / height;
+                 camera.updateProjectionMatrix();
+                 renderer.setSize(width, height);
+            }
+        }
+
+        // --- Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (isAutoRotating && dnaGroup && rotationSpeed > 0) {
+                dnaGroup.rotation.y += rotationSpeed;
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // --- Start ---
+        window.onload = init;
+
+    </script>
+</body>
+</html>
